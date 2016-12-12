@@ -203,17 +203,51 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 });
 
 
-function addNewWordInBrgd(word_id, tab) {
+function addNewWordInBrgd(data, tab) {
     chrome.cookies.getAll({"url": 'http://www.shanbay.com'}, function (cookies) {
-        $.ajax({
-            url: 'http://www.shanbay.com/api/v1/bdc/learning/',
+       /* $.ajax({*/
+            //url: 'http://www.shanbay.com/api/v1/bdc/learning/',
+            //type: 'POST',
+            //dataType: 'JSON',
+            //contentType: "application/json; charset=utf-8",
+            //data: JSON.stringify({
+                //content_type: "vocabulary",
+                //id: word_id
+            //}),
+            //success: function (data) {
+                //chrome.tabs.sendMessage(tab.id, {
+                    //callback: 'addWord',
+                    //data: {msg: 'success', rsp: data.data}
+                //});
+                //console.log('success');
+            //},
+            //error: function () {
+                //chrome.tabs.sendMessage(tab.id, {
+                    //callback: 'addWord',
+                    //data: {msg: 'error', rsp: {}}
+                //});
+                //console.log('error');
+            //},
+            //complete: function () {
+                //console.log('complete');
+            //}
+        /*});*/
+      // Ji-Yuhang 
+      $.ajax({
+          url: 'http://localhost:3000/api/v1/words/learning/',
             type: 'POST',
             dataType: 'JSON',
             contentType: "application/json; charset=utf-8",
+/*            data: JSON.stringify({*/
+                //content_type: "vocabulary",
+                //id: word_id
+            /*}),*/
             data: JSON.stringify({
-                content_type: "vocabulary",
-                id: word_id
+                //content_type: "vocabulary",
+                word_id: data.word_id,
+                word: data.data.content
             }),
+
             success: function (data) {
                 chrome.tabs.sendMessage(tab.id, {
                     callback: 'addWord',
@@ -221,17 +255,18 @@ function addNewWordInBrgd(word_id, tab) {
                 });
                 console.log('success');
             },
-            error: function () {
+            error: function (xhr,status, error) {
                 chrome.tabs.sendMessage(tab.id, {
                     callback: 'addWord',
                     data: {msg: 'error', rsp: {}}
                 });
-                console.log('error');
+                console.log('error',xhr,status,error);
             },
             complete: function () {
                 console.log('complete');
             }
         });
+
     });
 }
 

@@ -19,7 +19,7 @@ function ls(callback) {
 
 function searchingSelectedText () {
     var text = window.getSelection().toString().trim().match(/^[a-zA-Z\s']+$/);
-    console.info("selected " + text);
+    console.info("Ji-Yuhang selected " + text);
     if (undefined != text && null != text && 0 < text.length && ls()["click2s"] != 'no') {
         console.log("searching " + text);
         chrome.runtime.sendMessage({
@@ -70,7 +70,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                 case "success":
                     $('#shanbay-add-btn').addClass('hide');
                     $('#shanbay_popover .success, #shanbay-check-btn').removeClass('hide');
-                    $('#shanbay-check-btn').attr('href', 'http://www.shanbay.com/review/learning/' + message.data.rsp.id);
+                    $('#shanbay-check-btn').attr('href', 'http://www.shanbay.com/review/learning/' + message.data.rsp.word.id);
                     break;
                 case "error":
                     $('#shanbay_popover .success').text('添加失败，请重试。').removeClass().addClass('failed');
@@ -136,7 +136,7 @@ function popover(alldata) {
 
     $('#shanbay-add-btn').click(function (e) {
         e.preventDefault();
-        addNewWord(data.data.id);
+        addNewWord(data.data,data.data.id);
     });
 
     $('#shanbay-forget-btn').click(function (e) {
@@ -207,8 +207,8 @@ function setPopoverPosition(left, top) {
     });
 }
 
-function addNewWord(word_id) {
-    chrome.runtime.sendMessage({method: "addWord", data: word_id});
+function addNewWord(data, word_id) {
+    chrome.runtime.sendMessage({method: "addWord", data: {data: data,word_id: word_id}});
 }
 
 function forgetWord(learning_id) {
