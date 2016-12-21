@@ -19,12 +19,14 @@ function ls(callback) {
 
 function searchingSelectedText () {
     var text = window.getSelection().toString().trim().match(/^[a-zA-Z\s']+$/);
-    console.info("Ji-Yuhang selected " + text);
+    var wholeText = window.getSelection().anchorNode.wholeText
+    console.info("Ji-Yuhang selected " + text, wholeText);
     if (undefined != text && null != text && 0 < text.length && ls()["click2s"] != 'no') {
         console.log("searching " + text);
         chrome.runtime.sendMessage({
             method: 'lookup',
-            data: text[0]
+            data: text[0],
+            wholeText: wholeText
         });
         popover({
             shanbay: {
@@ -83,7 +85,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
 function popover(alldata) {
     var data = alldata.shanbay;
+    var wholeText = alldata.wholeText;
     getThesaurus(data.data.content);
+    getPhrase(data.data.content, wholeText);
     var webster = alldata.webster;
     var defs = "";
     if (ls()['webster_search'] == 'yes') defs = webster.defs;
@@ -98,7 +102,8 @@ function popover(alldata) {
                 '<div class="popover-content"><p>' + webster.defs + "</p></div>";
         } else {// word exist, but not recorded
             html += '<p><span class="word">' + data.data.content + '</span>'
-                + '<small class="pronunciation">' + (data.data.pron.length ? ' [' + data.data.pron + '] ' : '') + '</small></p>'
+                + '<small class="pronunciation">' + (data.data.pron.length ? ' [' + data.data.pron + '] ' : '') + '</small>'
+            + '<span class="shanbay_popover_phrase" id="shanbay_popover_phrase" style="color:blue!important; font-weight:bold!important">' + '</span></p>'
             // Ji-Yuhang remove UK
             html += '<a href="#" class="speak us">US<i class="icon icon-speak"></i></a></h3>'
 
@@ -113,7 +118,8 @@ function popover(alldata) {
     } else {// word recorded
         var forgotUrl = "http://www.shanbay.com/review/learning/" + data.data.learning_id
         html += '<p><span class="word">' + data.data.content + '</span>'
-            + '<span class="pronunciation">' + (data.data.pron.length ? ' [' + data.data.pron + '] ' : '') + '</span></p>'
+            + '<span class="pronunciation">' + (data.data.pron.length ? ' [' + data.data.pron + '] ' : '') + '</span>'
+            + '<span class="shanbay_popover_phrase" id="shanbay_popover_phrase" style="color:blue!important; font-weight:bold!important">' + '</span></p>'
         html += '<a href="#" class="speak us">US<i class="icon icon-speak"></i></a></h3>'
 
         html += '<div class="popover-content">'
@@ -287,6 +293,48 @@ function getThesaurus(word) {
         },
         complete: function () {
             console.log('getThesaurus complete');
+        }
+    });
+}
+
+function getPhrase(word, wholeText){
+    //var url = "http://localhost:3001/api/v1/words/thesaurus"
+    // Ji-Yuhang 
+    console.log("getPhrase:",word,wholeText);
+    $.ajax({
+        url: 'https://iamyuhang.com/api/v1/words/phrase/',
+        //url: 'http://localhost:3000/api/v1/words/phrase/',
+        type: 'POST',
+        dataType: 'JSON',
+        contentType: "application/json; charset=utf-8",
+        /*            data: JSON.stringify({*/
+        //content_type: "vocabulary",
+        //id: word_id
+        /*}),*/
+       data: JSON.stringify({
+            word: word,
+            whole_text: wholeText
+        }),
+
+        success: function (data) {
+            //chrome.tabs.sendMessage(tab.id, {
+                //callback: 'addWord',
+                //data: {msg: 'success', rsp: data.data}
+            //});
+            //console.log("get phrase success: ",data)
+            var phrase = data.data.phrase;
+            $("#shanbay_popover_phrase").append(phrase);
+            console.log('getPhrase success', data, phrase);
+        },
+        error: function (xhr,status, error) {
+//            chrome.tabs.sendMessage(tab.id, {
+                //callback: 'addWord',
+                //data: {msg: 'error', rsp: {}}
+            //});
+            console.log('getPhrase error',xhr,status,error);
+        },
+        complete: function () {
+            console.log('getPhrase complete');
         }
     });
 }

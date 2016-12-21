@@ -1,3 +1,8 @@
+#shanbay_popover_phrase {
+  color: blue!important;
+  font-weight: bold!important;
+}
+
 #shanbay_popover{
 	z-index: 2147483647;
 }
@@ -122,3 +127,7 @@
 li {
     float: left;
 }
+/*.shanbay_popover_phrase {*/
+  /*color: blue!important;*/
+  /*font-weight: bold!important;*/
+/*}*/

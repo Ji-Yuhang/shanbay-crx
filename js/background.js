@@ -5,10 +5,10 @@
 checked = false;
 
 $(function () {
-    check_in();
+    //check_in();
     setTimeout(function () {
         checked = false;
-        check_in();
+        //check_in();
     }, 3 * 60 * 60 * 1000);//每3h提醒一次
 
     chrome.contextMenus.removeAll(function () {
@@ -147,7 +147,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             break;
         case 'lookup':
             isUserSignedOn(function () {
-                getClickHandler(request.data, sender.tab);
+                getClickHandler(request.data, sender.tab, request.wholeText);
             });
             break;
         case 'addWord':
@@ -234,7 +234,7 @@ function addNewWordInBrgd(data, tab) {
         /*});*/
       // Ji-Yuhang 
       $.ajax({
-          url: 'http://localhost:3000/api/v1/words/learning/',
+          url: 'https://iamyuhang.com/api/v1/words/learning/',
             type: 'POST',
             dataType: 'JSON',
             contentType: "application/json; charset=utf-8",
@@ -322,7 +322,7 @@ function isUserSignedOn(callback) {
     });
 }
 
-function getClickHandler(term, tab) {
+function getClickHandler(term, tab, wholeText) {
     console.log('signon');
     var url = API + normalize(term);//normalize it only
 
@@ -342,13 +342,14 @@ function getClickHandler(term, tab) {
                         callback: 'popover',
                         data: {
                             shanbay: data,
+                            wholeText: wholeText,
                             webster: {term: json.hw[0].textContent.replace(/\*/g, '·'), defs: defs}
                         }
                     });
                 });
             else chrome.tabs.sendMessage(tab.id, {
                 callback: 'popover',
-                data: {shanbay: data}
+                data: {shanbay: data, wholeText: wholeText}
             });
         },
         error: function () {
