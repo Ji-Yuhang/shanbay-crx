@@ -83,6 +83,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
 function popover(alldata) {
     var data = alldata.shanbay;
+    getThesaurus(data.data.content);
     var webster = alldata.webster;
     var defs = "";
     if (ls()['webster_search'] == 'yes') defs = webster.defs;
@@ -98,10 +99,12 @@ function popover(alldata) {
         } else {// word exist, but not recorded
             html += '<p><span class="word">' + data.data.content + '</span>'
                 + '<small class="pronunciation">' + (data.data.pron.length ? ' [' + data.data.pron + '] ' : '') + '</small></p>'
-            html += '<a href="#" class="speak uk">UK<i class="icon icon-speak"></i></a><a href="#" class="speak us">US<i class="icon icon-speak"></i></a></h3>'
+            // Ji-Yuhang remove UK
+            html += '<a href="#" class="speak us">US<i class="icon icon-speak"></i></a></h3>'
 
             html += '<div class="popover-content">'
                 + '<p>' + data.data.definition.split('\n').join("<br/>") + "<br/>" + defs + '</p>'
+                + '<p id="shanbay_popover_thesaurus">' + '</p>'
                 + '<div class="add-btn"><a href="#" class="btn" id="shanbay-add-btn">添加生词</a>'
                 + '<p class="success hide">成功添加！</p>'
                 + '<a href="#" target="_blank" class="btn hide" id="shanbay-check-btn">查看</a></div>'
@@ -111,11 +114,12 @@ function popover(alldata) {
         var forgotUrl = "http://www.shanbay.com/review/learning/" + data.data.learning_id
         html += '<p><span class="word">' + data.data.content + '</span>'
             + '<span class="pronunciation">' + (data.data.pron.length ? ' [' + data.data.pron + '] ' : '') + '</span></p>'
-        html += '<a href="#" class="speak uk">UK<i class="icon icon-speak"></i></a><a href="#" class="speak us">US<i class="icon icon-speak"></i></a></h3>'
+        html += '<a href="#" class="speak us">US<i class="icon icon-speak"></i></a></h3>'
 
         html += '<div class="popover-content">'
             + '<p>' + data.data.definition.split('\n').join("<br/>") + '</p>'
             + '<p>' + data.data.en_definition.defn.split('\n').join("<br/>") + '</p>'
+            + '<p id="shanbay_popover_thesaurus">' + '</p>'
             + '<div class="add-btn"><a href="#" class="btn" id="shanbay-forget-btn">我忘了</a></div>'
             + '<p class="success hide">成功添加！</p>'
             + '<div class="add-btn"><a href="' + forgotUrl + '" target="_blank" class="btn" id="shanbay-check-btn">查看</a></div>'
@@ -218,4 +222,71 @@ function forgetWord(learning_id) {
 
 function playAudio(audio_url) {
     chrome.runtime.sendMessage({method: "playAudio", data: {audio_url: audio_url}})
+}
+
+function getThesaurus(word) {
+    //var url = "http://localhost:3001/api/v1/words/thesaurus"
+    // Ji-Yuhang 
+    console.log("getThesaurus:",word);
+    $.ajax({
+        url: 'https://iamyuhang.com/api/v1/words/thesaurus/?word=' +word ,
+        type: 'GET',
+        dataType: 'JSON',
+        contentType: "application/json; charset=utf-8",
+        /*            data: JSON.stringify({*/
+        //content_type: "vocabulary",
+        //id: word_id
+        /*}),*/
+//        data: JSON.stringify({
+            ////content_type: "vocabulary",
+            ////word_id: data.word_id,
+            //word: word
+        //}),
+
+        success: function (data) {
+            //chrome.tabs.sendMessage(tab.id, {
+                //callback: 'addWord',
+                //data: {msg: 'success', rsp: data.data}
+            //});
+            var thesaurus = data.data.thesaurus;
+            var thesaurus_text =JSON.stringify(thesaurus);
+            thesaurus_text = ''
+            for (var adj in thesaurus)
+            {
+                var list_list = thesaurus[adj];
+                var list_list_text = '<b>'+adj+':</b>';
+                list_list_text += '<div>';
+                for(var i=0; i<list_list.length; i++){
+                    var list = list_list[i];
+                    var list_text = '&nbsp&nbsp<b>'+i+':</b>';
+                    list_text += '<span>';
+                    for(var j=0; j<list.length; j++){
+                        var w = list[j];
+                        list_text += '<span>&nbsp;';
+                        list_text += w;
+                        list_text += '-></span>';
+
+                    }
+                    list_text += '</span><br/>';
+                    list_list_text += list_text
+                }
+                list_list_text += '</div>';
+//                var adj_text = '';
+                //adj_text += list_list_text;
+                thesaurus_text += '<p>' + list_list_text + '</p>';
+            }
+            $("#shanbay_popover_thesaurus").append(thesaurus_text);
+            console.log('getThesaurus success', data, data.data, thesaurus, thesaurus_text);
+        },
+        error: function (xhr,status, error) {
+//            chrome.tabs.sendMessage(tab.id, {
+                //callback: 'addWord',
+                //data: {msg: 'error', rsp: {}}
+            //});
+            console.log('getThesaurus error',xhr,status,error);
+        },
+        complete: function () {
+            console.log('getThesaurus complete');
+        }
+    });
 }
