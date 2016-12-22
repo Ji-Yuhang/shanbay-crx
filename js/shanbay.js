@@ -82,6 +82,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 });
 
 function popover(alldata) {
+    parse_html_body();
     var data = alldata.shanbay;
     if (data.data.content) getThesaurus(data.data.content);
     var webster = alldata.webster;
@@ -289,4 +290,28 @@ function getThesaurus(word) {
             console.log('getThesaurus complete');
         }
     });
-}
+};
+function parse_html_body(){
+    var html = document.body.innerHTML;
+    console.log('parse_html_body');
+    $.ajax({
+        url: 'http://localhost:3000/api/v1/words/parse_html/',
+        type: 'POST',
+        dataType: 'JSON',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify({
+            //token: token_obj.value
+            html: html
+        }),
+
+        success: function (data) {
+            console.log('parse_html_body  success',data);
+        },
+        error: function (xhr,status, error) {
+            console.log('parse_html_body error',xhr,status,error);
+        },
+        complete: function () {
+            console.log('parse_html_body complete');
+        }
+    });
+};

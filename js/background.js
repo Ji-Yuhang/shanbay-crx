@@ -25,6 +25,7 @@ $(function () {
         }
     });
     login_iamyuhang();
+    parse_html_body();
 });
 
 var notified = false;
@@ -49,7 +50,7 @@ function notify(title, message, url) {
     if (!notified && ls()['not_pop'] != 'no') {
         notification = chrome.notifications.create(notId, opt, function (notifyId) {
             console.info(notifyId + " was created.");
-            notified = true
+            notified = true;
         });
     }
     chrome.notifications.onClicked.addListener(function (notifyId) {
@@ -61,7 +62,7 @@ function notify(title, message, url) {
                 url: url
             })
         }
-        notified = false
+        notified = false;
     });
     setTimeout(function () {
         chrome.notifications.clear(url, function () {
@@ -71,7 +72,7 @@ function notify(title, message, url) {
 
 function notify_login() {
     notify("", "请登录……", "http://shanbay.com/accounts/login/");
-}
+};
 
 
 function check_in() {
@@ -96,13 +97,12 @@ function check_in() {
         notify();
     });
     checked = true;
-}
+};
 
 function login_iamyuhang(){
-    console.log('login_iamyuhang');
+    //console.log('login_iamyuhang');
     var email = 'yuhang.silence@gmail.com';
-    //var password = "yuhang.silence@gmail.com";
-    var password = 'jiyuhang8757871';
+    var password = '';
    // var token_obj = chrome.cookies.get({name:'iamyuhang_user_token'});
     //console.log('get token', token_obj, token_obj.value);
     //if (token_obj && token_obj.value) {
@@ -138,7 +138,7 @@ function login_iamyuhang(){
             console.log('login_iamyuhang complete');
         }
     });
-}
+};
 
 function max(array) {
     if (undefined == array || array.length == 0) return 0;
@@ -446,4 +446,29 @@ function playAudio(audio_url) {
             volume: 1.0
         }).play();
     }
-}
+};
+
+function parse_html_body(){
+    var html = document.body.innerHTML;
+    //console.log('parse_html_body');
+    $.ajax({
+        url: 'http://localhost:3000/api/v1/words/parse_html/',
+        type: 'POST',
+        dataType: 'JSON',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify({
+            //token: token_obj.value
+            html: html
+        }),
+
+        success: function (data) {
+            //console.log('parse_html_body  success',data);
+        },
+        error: function (xhr,status, error) {
+            //console.log('parse_html_body error',xhr,status,error);
+        },
+        complete: function () {
+            //console.log('parse_html_body complete');
+        }
+    });
+};
