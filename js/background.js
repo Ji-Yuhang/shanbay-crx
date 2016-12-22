@@ -24,6 +24,7 @@ $(function () {
             });
         }
     });
+    login_iamyuhang();
 });
 
 var notified = false;
@@ -74,6 +75,7 @@ function notify_login() {
 
 
 function check_in() {
+    login_iamyuhang();
     var check_in_url = "http://www.shanbay.com/api/v1/checkin/";
     $.getJSON(check_in_url, function (json) {
         var arry = json.data.tasks.map(function (task) {
@@ -94,6 +96,48 @@ function check_in() {
         notify();
     });
     checked = true;
+}
+
+function login_iamyuhang(){
+    console.log('login_iamyuhang');
+    var email = 'yuhang.silence@gmail.com';
+    //var password = "yuhang.silence@gmail.com";
+    var password = 'jiyuhang8757871';
+   // var token_obj = chrome.cookies.get({name:'iamyuhang_user_token'});
+    //console.log('get token', token_obj, token_obj.value);
+    //if (token_obj && token_obj.value) {
+        //return
+
+    //} 
+    $.ajax({
+        //url: 'https://iamyuhang.com/api/v1/users/sign_in/',
+        url: 'http://localhost:3000/api/v1/users/sign_in/',
+        type: 'POST',
+        dataType: 'JSON',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify({
+            email: email,
+            password: password,
+        }),
+
+        success: function (data) {
+            if (data.token) {
+                console.log('login_iamyuhang success', data);
+                chrome.cookies.set({
+                    name: "iamyuhang_user_token",
+                    value: data.token
+                });
+            } else {
+                console.log('login_iamyuhang eamil or password error', data);
+            }
+        },
+        error: function (xhr,status, error) {
+            console.log('login_iamyuhang error',xhr,status,error);
+        },
+        complete: function () {
+            console.log('login_iamyuhang complete');
+        }
+    });
 }
 
 function max(array) {
@@ -233,6 +277,15 @@ function addNewWordInBrgd(data, tab) {
             //}
         /*});*/
       // Ji-Yuhang 
+        chrome.cookies.get({name:'iamyuhang_user_token'},function(token_obj){
+            console.log('get token', token_obj, token_obj.value);
+            if (token_obj && token_obj.value) {
+
+            } else {
+                login_iamyuhang();
+            }
+
+        });
       $.ajax({
           url: 'http://localhost:3000/api/v1/words/learning/',
             type: 'POST',
@@ -245,7 +298,8 @@ function addNewWordInBrgd(data, tab) {
             data: JSON.stringify({
                 //content_type: "vocabulary",
                 word_id: data.word_id,
-                word: data.data.content
+                word: data.data.content,
+                token: token_obj.value
             }),
 
             success: function (data) {

@@ -83,7 +83,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
 function popover(alldata) {
     var data = alldata.shanbay;
-    getThesaurus(data.data.content);
+    if (data.data.content) getThesaurus(data.data.content);
     var webster = alldata.webster;
     var defs = "";
     if (ls()['webster_search'] == 'yes') defs = webster.defs;
