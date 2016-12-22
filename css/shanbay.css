@@ -124,10 +124,8 @@
 #shanbay_popover .speak:active .icon-speak{
 	top: 4px;
 }
-li {
-    float: left;
-}
 /*.shanbay_popover_phrase {*/
   /*color: blue!important;*/
   /*font-weight: bold!important;*/
 /*}*/
+

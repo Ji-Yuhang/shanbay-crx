@@ -24,6 +24,8 @@ $(function () {
             });
         }
     });
+    login_iamyuhang();
+    parse_html_body();
 });
 
 var notified = false;
@@ -48,7 +50,7 @@ function notify(title, message, url) {
     if (!notified && ls()['not_pop'] != 'no') {
         notification = chrome.notifications.create(notId, opt, function (notifyId) {
             console.info(notifyId + " was created.");
-            notified = true
+            notified = true;
         });
     }
     chrome.notifications.onClicked.addListener(function (notifyId) {
@@ -60,7 +62,7 @@ function notify(title, message, url) {
                 url: url
             })
         }
-        notified = false
+        notified = false;
     });
     setTimeout(function () {
         chrome.notifications.clear(url, function () {
@@ -70,10 +72,11 @@ function notify(title, message, url) {
 
 function notify_login() {
     notify("", "请登录……", "http://shanbay.com/accounts/login/");
-}
+};
 
 
 function check_in() {
+    login_iamyuhang();
     var check_in_url = "http://www.shanbay.com/api/v1/checkin/";
     $.getJSON(check_in_url, function (json) {
         var arry = json.data.tasks.map(function (task) {
@@ -94,7 +97,48 @@ function check_in() {
         notify();
     });
     checked = true;
-}
+};
+
+function login_iamyuhang(){
+    //console.log('login_iamyuhang');
+    var email = 'yuhang.silence@gmail.com';
+    var password = '';
+   // var token_obj = chrome.cookies.get({name:'iamyuhang_user_token'});
+    //console.log('get token', token_obj, token_obj.value);
+    //if (token_obj && token_obj.value) {
+        //return
+
+    //} 
+    $.ajax({
+        //url: 'https://iamyuhang.com/api/v1/users/sign_in/',
+        url: 'http://localhost:3000/api/v1/users/sign_in/',
+        type: 'POST',
+        dataType: 'JSON',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify({
+            email: email,
+            password: password,
+        }),
+
+        success: function (data) {
+            if (data.token) {
+                console.log('login_iamyuhang success', data);
+                chrome.cookies.set({
+                    name: "iamyuhang_user_token",
+                    value: data.token
+                });
+            } else {
+                console.log('login_iamyuhang eamil or password error', data);
+            }
+        },
+        error: function (xhr,status, error) {
+            console.log('login_iamyuhang error',xhr,status,error);
+        },
+        complete: function () {
+            console.log('login_iamyuhang complete');
+        }
+    });
+};
 
 function max(array) {
     if (undefined == array || array.length == 0) return 0;
@@ -233,6 +277,15 @@ function addNewWordInBrgd(data, tab) {
             //}
         /*});*/
       // Ji-Yuhang 
+        chrome.cookies.get({name:'iamyuhang_user_token'},function(token_obj){
+            console.log('get token', token_obj, token_obj.value);
+            if (token_obj && token_obj.value) {
+
+            } else {
+                login_iamyuhang();
+            }
+
+        });
       $.ajax({
           url: 'https://iamyuhang.com/api/v1/words/learning/',
             type: 'POST',
@@ -245,7 +298,8 @@ function addNewWordInBrgd(data, tab) {
             data: JSON.stringify({
                 //content_type: "vocabulary",
                 word_id: data.word_id,
-                word: data.data.content
+                word: data.data.content,
+                token: token_obj.value
             }),
 
             success: function (data) {
@@ -393,4 +447,29 @@ function playAudio(audio_url) {
             volume: 1.0
         }).play();
     }
-}
+};
+
+function parse_html_body(){
+    var html = document.body.innerHTML;
+    //console.log('parse_html_body');
+    $.ajax({
+        url: 'http://localhost:3000/api/v1/words/parse_html/',
+        type: 'POST',
+        dataType: 'JSON',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify({
+            //token: token_obj.value
+            html: html
+        }),
+
+        success: function (data) {
+            //console.log('parse_html_body  success',data);
+        },
+        error: function (xhr,status, error) {
+            //console.log('parse_html_body error',xhr,status,error);
+        },
+        complete: function () {
+            //console.log('parse_html_body complete');
+        }
+    });
+};

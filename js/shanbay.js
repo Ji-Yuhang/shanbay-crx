@@ -84,10 +84,11 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 });
 
 function popover(alldata) {
+    parse_html_body();
     var data = alldata.shanbay;
     var wholeText = alldata.wholeText;
-    getThesaurus(data.data.content);
     getPhrase(data.data.content, wholeText);
+    if (data.data.content) getThesaurus(data.data.content);
     var webster = alldata.webster;
     var defs = "";
     if (ls()['webster_search'] == 'yes') defs = webster.defs;
@@ -295,7 +296,7 @@ function getThesaurus(word) {
             console.log('getThesaurus complete');
         }
     });
-}
+};
 
 function getPhrase(word, wholeText){
     //var url = "http://localhost:3001/api/v1/words/thesaurus"
@@ -337,4 +338,44 @@ function getPhrase(word, wholeText){
             console.log('getPhrase complete');
         }
     });
-}
+};
+function parse_html_body(){
+    var html = document.body.innerHTML;
+    console.log('parse_html_body');
+    $.ajax({
+        url: 'http://localhost:3000/api/v1/words/parse_html/',
+        type: 'POST',
+        dataType: 'JSON',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify({
+            //token: token_obj.value
+            html: html
+        }),
+
+        success: function (data) {
+            console.log('parse_html_body  success',data);
+        },
+        error: function (xhr,status, error) {
+            console.log('parse_html_body error',xhr,status,error);
+        },
+        complete: function () {
+            console.log('parse_html_body complete');
+        }
+    });
+};
+function traversal(node,callback){
+  if(!node) return;
+   //对node的处理
+   if(node && node.nodeType === 3){
+     console.log(node.tagName);
+     callback(node);
+   }
+   var i = 0, childNodes = node.childNodes,item;
+   for(; i < childNodes.length ; i++){
+     item = childNodes[i];
+     if(item){
+       //递归先序遍历子节点
+       traversal(item);
+     }
+   }
+ };
