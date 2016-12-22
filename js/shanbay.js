@@ -315,3 +315,19 @@ function parse_html_body(){
         }
     });
 };
+function traversal(node,callback){
+  if(!node) return;
+   //对node的处理
+   if(node && node.nodeType === 3){
+     console.log(node.tagName);
+     callback(node);
+   }
+   var i = 0, childNodes = node.childNodes,item;
+   for(; i < childNodes.length ; i++){
+     item = childNodes[i];
+     if(item){
+       //递归先序遍历子节点
+       traversal(item);
+     }
+   }
+ };
