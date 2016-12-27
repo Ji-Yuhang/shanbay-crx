@@ -15,6 +15,7 @@
       "js/howler.min.js",
       "js/common.js",
       "js/dictionaries/dict.js",
+      "js/iamyuhang.js",
       "js/background.js"
     ]
   },

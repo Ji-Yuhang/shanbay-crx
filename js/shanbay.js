@@ -3,6 +3,7 @@
  *
  */
 
+var last_position = {left:null,top:null}
 
 function ls(callback) {
     chrome.runtime.sendMessage({method: "getLocalStorage"}, function (response) {
@@ -72,7 +73,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                 case "success":
                     $('#shanbay-add-btn').addClass('hide');
                     $('#shanbay_popover .success, #shanbay-check-btn').removeClass('hide');
-                    $('#shanbay-check-btn').attr('href', 'http://www.shanbay.com/review/learning/' + message.data.rsp.word.id);
+                    //$('#shanbay-check-btn').attr('href', 'http://www.shanbay.com/review/learning/' + message.data.rsp.word.id);
+                    console.log('addWOrd success', message.data, message.data.rsp );
+                    $('#shanbay-check-btn').attr('href', 'https://iamyuhang.com/learnings/' + message.data.rsp.learning.id);
                     break;
                 case "error":
                     $('#shanbay_popover .success').text('添加失败，请重试。').removeClass().addClass('failed');
@@ -84,11 +87,12 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 });
 
 function popover(alldata) {
+    var parent_is_popver = is_ancestor_contain_id(window.getSelection().anchorNode, 'shanbay_popover');
     parse_html_body();
     var data = alldata.shanbay;
     var wholeText = alldata.wholeText;
-    getPhrase(data.data.content, wholeText);
-    if (data.data.content) getThesaurus(data.data.content);
+    if (data.data && data.data.content) getThesaurus(data.data.content);
+    if (data.data && data.data.content) getPhrase(data.data.content, wholeText);
     var webster = alldata.webster;
     var defs = "";
     if (ls()['webster_search'] == 'yes') defs = webster.defs;
@@ -134,16 +138,26 @@ function popover(alldata) {
     }
 
     html += '</div></div>';
+
+    if (parent_is_popver) {
+    }
     $('#shanbay_popover').remove();
     $('body').append(html);
 
-    getSelectionOffset(function (left, top) {
-        setPopoverPosition(left, top);
-        var h =  $(window).scrollTop() + $(window).height();
-        if ( h -200 < top && h >= top) {
-          $(window).scrollTop(200+$(window).scrollTop());
-        }
-    });
+    console.log("----------------------  parent_is_popver ------------------------");
+    console.log(parent_is_popver,last_position);
+    console.log("----------------------  parent_is_popver ------------------------");
+    if (parent_is_popver) {
+        setPopoverPosition(last_position.left, last_position.top);
+    } else {
+        getSelectionOffset(function (left, top) {
+            setPopoverPosition(left, top);
+            var h =  $(window).scrollTop() + $(window).height();
+            if ( h -200 < top && h >= top) {
+                $(window).scrollTop(200+$(window).scrollTop());
+            }
+        });
+    }
 
     $('#shanbay-add-btn').click(function (e) {
         e.preventDefault();
@@ -211,11 +225,22 @@ function getOffset(el) {
 }
 
 function setPopoverPosition(left, top) {
-    $('#shanbay_popover').css({
-        position: 'absolute',
-        left: left,
-        top: top
-    });
+    if (left > 0 && top > 0) {
+        $('#shanbay_popover').css({
+            position: 'absolute',
+            left: left,
+            top: top
+        });
+        last_position.left = left;
+        last_position.top = top;
+    } else {
+        $('#shanbay_popover').css({
+            position: 'absolute',
+            left: last_position.left,
+            top: last_position.top
+        });
+
+    }
 }
 
 function addNewWord(data, word_id) {
@@ -340,10 +365,12 @@ function getPhrase(word, wholeText){
     });
 };
 function parse_html_body(){
+    return;
     var html = document.body.innerHTML;
     console.log('parse_html_body');
     $.ajax({
-        url: 'http://localhost:3000/api/v1/words/parse_html/',
+        //url: 'http://localhost:3000/api/v1/words/parse_html/',
+        url: 'https://iamyuhang.com/api/v1/words/parse_html/',
         type: 'POST',
         dataType: 'JSON',
         contentType: "application/json; charset=utf-8",
@@ -379,3 +406,12 @@ function traversal(node,callback){
      }
    }
  };
+
+function is_ancestor_contain_id(node,id) {
+    if (node && node.id != id) {
+        return is_ancestor_contain_id(node.parentNode,id);
+    }
+    if (node && node.id == id) return true
+    return false;
+    
+};

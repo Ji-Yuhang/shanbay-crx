@@ -57,6 +57,19 @@ function addBatch(text) {
         });
     $('#add-status').html("添加完成");
 }
+
+function refresh_iamyuhang_user_status(){
+    if (iamyuhang_user_is_exist()) {
+        $('#login_div').hide();
+        $('#iamyuahng_name')[0].innerHTML = '退出' + iamyuhang_user().email;
+        $('#sign_out_iamyuhang_li').show();
+    } else {
+
+        $('#login_div').show();
+        $('#sign_out_iamyuhang_li').hide();
+    }
+
+}
 $(function () {
     $('input[type=submit]').click(function () {
         if ($('#batch-add-hint').length == 0)
@@ -76,4 +89,39 @@ $(function () {
     $('#options').click(function () {
         chrome.tabs.create({url: 'options.html'})
     })
+    $('#login_iamyuhang').click(function () {
+        chrome.tabs.create({url: 'login_iamyuhang.html'})
+    })
+    $('#sign_out_iamyuhang').click(function () {
+        console.log("sign_out_iamyuhang");
+        //iamyuhang_user_sign_out();
+        chrome.runtime.sendMessage({
+            method: 'sign_out_iamyuhang'
+        });
+    });
+
+    $('#iamyuhang_commit').click(function(){
+        //$('#iamyuhang_form')
+        var email = $('#user_email').val();
+        var password = $('#user_password').val();
+        chrome.runtime.sendMessage({
+            method: 'login_iamyuhang_with_params',
+            email: email,
+            password: password
+        });
+    });
+    //var user = localStorage['iamyuhang_user'];
+    refresh_iamyuhang_user_status();
+    
+
+});
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    //console.log("popup.html received method: " + request);
+    switch (request.method) {
+        case "refresh_iamyuhang_user_status":
+            refresh_iamyuhang_user_status();
+            break;
+        default:
+    }
 });

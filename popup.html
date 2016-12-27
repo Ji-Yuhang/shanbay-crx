@@ -37,11 +37,38 @@
         <li><a href="javascript:void(0)" id="batch-add">批量添加单词</a></li>
         <li><a href="javascript:void(0)" id="begin-learning">开始背单词</a></li>
         <li><a href="javascript:void(0)" id="options">高级设置</a></li>
+        <!--<li id="login_iamyuhang_li"><a href="javascript:void(0)" >登陆 iamyuhang.com</a></li>-->
+        <li id="sign_out_iamyuhang_li"><a href="javascript:void(0)" id="sign_out_iamyuhang" ><span id="iamyuahng_name"></span></a></li>
     </ul>
 </div>
+<div id="login_div" style="width:200px;margin: 0px auto;">
+        <h3>登陆 iamyuhang.com</h2>
+        <form id="iamyuhang_form" class="new_user" accept-charset="UTF-8" method="post">
+            <div class="field">
+                <label for="user_email">Email</label><br />
+                <input autofocus="autofocus" type="email" value="" name="user[email]" id="user_email" />
+            </div>
+
+            <div class="field">
+                <label for="user_password">Password</label><br />
+                <input autocomplete="off" type="password" name="user[password]" id="user_password" />
+            </div>
+
+            <div class="field">
+                <input name="user[remember_me]" type="hidden" value="0" /><input type="checkbox" value="1" name="user[remember_me]" id="user_remember_me" />
+                <label for="user_remember_me">Remember me</label>
+            </div>
+
+            <div class="actions">
+                <input type="button" id="iamyuhang_commit" value="Log in" data-disable-with="Log in" />
+            </div>
+        </form>
+    </div>
+
 <!--   <input type="button" id="batch-add" value="">
    <textarea id="words" cols="40" rows="60"></textarea>-->
 </body>
 <script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/iamyuhang.js"></script>
 <script type="text/javascript" src="js/popup.js" charset="UTF-8"></script>
 </html>

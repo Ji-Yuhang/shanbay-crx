@@ -5,7 +5,7 @@
 checked = false;
 
 $(function () {
-    //check_in();
+    check_in();
     setTimeout(function () {
         checked = false;
         //check_in();
@@ -24,7 +24,7 @@ $(function () {
             });
         }
     });
-    login_iamyuhang();
+    //login_iamyuhang();
     parse_html_body();
 });
 
@@ -76,7 +76,7 @@ function notify_login() {
 
 
 function check_in() {
-    login_iamyuhang();
+    //login_iamyuhang();
     var check_in_url = "http://www.shanbay.com/api/v1/checkin/";
     $.getJSON(check_in_url, function (json) {
         var arry = json.data.tasks.map(function (task) {
@@ -99,19 +99,17 @@ function check_in() {
     checked = true;
 };
 
-function login_iamyuhang(){
-    //console.log('login_iamyuhang');
-    var email = 'yuhang.silence@gmail.com';
-    var password = '';
-   // var token_obj = chrome.cookies.get({name:'iamyuhang_user_token'});
-    //console.log('get token', token_obj, token_obj.value);
-    //if (token_obj && token_obj.value) {
-        //return
-
-    //} 
+function login_iamyuhang_with_params(email,password,sendResponse){
+    //console.log('login_iamyuhang_with_params',email,password);
+    if (iamyuhang_user_is_exist()) {
+        //console.log("iamyuhang_user", iamyuhang_user());
+        //return;
+    } 
+    //localStorage.setItem('shanbay_cookies', cookie);
     $.ajax({
-        //url: 'https://iamyuhang.com/api/v1/users/sign_in/',
-        url: 'http://localhost:3000/api/v1/users/sign_in/',
+        //async: false,
+        url: 'https://iamyuhang.com/api/v1/users/sign_in/',
+        //url: 'http://localhost:3001/api/v1/users/sign_in/',
         type: 'POST',
         dataType: 'JSON',
         contentType: "application/json; charset=utf-8",
@@ -120,24 +118,38 @@ function login_iamyuhang(){
             password: password,
         }),
 
-        success: function (data) {
-            if (data.token) {
-                console.log('login_iamyuhang success', data);
-                chrome.cookies.set({
-                    name: "iamyuhang_user_token",
-                    value: data.token
-                });
+        success: function (da) {
+            //sendResponse('will callback',da);
+            if (da.token) {
+                //localStorage.setItem('iamyuhang_user_token', da.token);
+                localStorage.setItem('iamyuhang_user', JSON.stringify(da.user));
+                console.log('login_iamyuhang success', da);
+                //sendResponse({status:'success', token:da.token, user: da.user});
             } else {
-                console.log('login_iamyuhang eamil or password error', data);
+                console.log('login_iamyuhang eamil or password error', da);
+                //sendResponse({status:'fail'});
             }
+            notify_refresh_user_status();
         },
-        error: function (xhr,status, error) {
-            console.log('login_iamyuhang error',xhr,status,error);
+        error: function (xhr,status, err) {
+            console.log('login_iamyuhang error',xhr,status,err);
+            //sendResponse({status:'error'});
+            notify_refresh_user_status();
         },
         complete: function () {
             console.log('login_iamyuhang complete');
+            //sendResponse({status:'complete'});
+            notify_refresh_user_status();
         }
     });
+
+}
+function login_iamyuhang(){
+    //console.log('login_iamyuhang');
+    var email = 'yuhang.silence@gmail.com';
+    var password = '';
+    login_iamyuhang_with_params(email,password);
+
 };
 
 function max(array) {
@@ -156,8 +168,11 @@ function saveToStorage() {
         console.log('localStorage saved in chrome.storage.sync');
     });
 }
-
+chrome.extension.onRequest.addListener(function(request,sender,sendResponse){
+    console.log("chrome.extension.onRequest: " + request,sender,sendResponse);
+});
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    console.log("received method: " + request);
     if(request.method != 'getLocalStorage') {
         console.log("received method: " + request.method);
         console.log(request);
@@ -241,8 +256,15 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                 }
             };
             xhr.send();
+        case 'login_iamyuhang_with_params':
+            login_iamyuhang_with_params(request.email,request.password,sendResponse);
+            break;
+        case 'sign_out_iamyuhang':
+            iamyuhang_user_sign_out();
+            //sendResponse();
+            break;
         default :
-            sendResponse({data: []}); // snub them.
+            sendResponse({data: [], error:'no method match'+ request.method, request:request}); // snub them.
     }
 });
 
@@ -276,38 +298,34 @@ function addNewWordInBrgd(data, tab) {
                 //console.log('complete');
             //}
         /*});*/
-      // Ji-Yuhang 
-        chrome.cookies.get({name:'iamyuhang_user_token'},function(token_obj){
-            console.log('get token', token_obj, token_obj.value);
-            if (token_obj && token_obj.value) {
-
-            } else {
-                login_iamyuhang();
-            }
-
-        });
-      $.ajax({
-          url: 'https://iamyuhang.com/api/v1/words/learning/',
+      
+    });
+    if (iamyuhang_user_is_exist()) {
+        $.ajax({
+            url: 'https://iamyuhang.com/api/v1/words/learning/',
+            //url: 'http://localhost:3001/api/v1/words/learning/',
             type: 'POST',
             dataType: 'JSON',
             contentType: "application/json; charset=utf-8",
-/*            data: JSON.stringify({*/
-                //content_type: "vocabulary",
-                //id: word_id
+            /*            data: JSON.stringify({*/
+            //content_type: "vocabulary",
+            //id: word_id
             /*}),*/
             data: JSON.stringify({
                 //content_type: "vocabulary",
                 word_id: data.word_id,
                 word: data.data.content,
-                token: token_obj.value
+                token: iamyuhang_user().authentication_token
             }),
 
             success: function (data) {
-                chrome.tabs.sendMessage(tab.id, {
-                    callback: 'addWord',
-                    data: {msg: 'success', rsp: data.data}
-                });
-                console.log('success');
+                console.log('ajax success',data);
+                if (data.status == 'ok') {
+                    chrome.tabs.sendMessage(tab.id, {
+                        callback: 'addWord',
+                        data: {msg: 'success', rsp: data.data}
+                    });
+                }
             },
             error: function (xhr,status, error) {
                 chrome.tabs.sendMessage(tab.id, {
@@ -320,8 +338,8 @@ function addNewWordInBrgd(data, tab) {
                 console.log('complete');
             }
         });
+    }
 
-    });
 }
 
 function forgetWordInBrgd(learning_id, tab) {
@@ -451,9 +469,11 @@ function playAudio(audio_url) {
 
 function parse_html_body(){
     var html = document.body.innerHTML;
+    return;
     //console.log('parse_html_body');
     $.ajax({
-        url: 'http://localhost:3000/api/v1/words/parse_html/',
+        //url: 'http://localhost:3000/api/v1/words/parse_html/',
+        url: 'https://iamyuhang.com/api/v1/words/parse_html/',
         type: 'POST',
         dataType: 'JSON',
         contentType: "application/json; charset=utf-8",
