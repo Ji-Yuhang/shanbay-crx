@@ -110,9 +110,14 @@ $(function () {
             password: password
         });
     });
+    $('#learnings').click(function(){
+        chrome.tabs.create({url: 'https://iamyuhang.com/learnings'});
+
+    });
+
     //var user = localStorage['iamyuhang_user'];
     refresh_iamyuhang_user_status();
-    
+
 
 });
 
