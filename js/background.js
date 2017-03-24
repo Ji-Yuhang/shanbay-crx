@@ -8,8 +8,8 @@ $(function () {
     check_in();
     setTimeout(function () {
         checked = false;
-        //check_in();
-    }, 3 * 60 * 60 * 1000);//每3h提醒一次
+        check_in();
+    }, 1 * 3 * 60 * 60  * 1000);//每3h提醒一次
 
     chrome.contextMenus.removeAll(function () {
         if (localStorage['ctx_menu'] != 'no') {
@@ -89,11 +89,11 @@ function check_in() {
         }
         else if (m > 0) {
             chrome.browserAction.setBadgeText({text: m + ''});
-            //notified = false;
+            notified = false;
             notify();
         }
     }).fail(function () {
-        //notified = false;
+        notified = false;
         notify();
     });
     checked = true;
@@ -104,7 +104,7 @@ function login_iamyuhang_with_params(email,password,sendResponse){
     if (iamyuhang_user_is_exist()) {
         //console.log("iamyuhang_user", iamyuhang_user());
         //return;
-    } 
+    }
     //localStorage.setItem('shanbay_cookies', cookie);
     $.ajax({
         //async: false,
@@ -298,7 +298,7 @@ function addNewWordInBrgd(data, tab) {
                 //console.log('complete');
             //}
         /*});*/
-      
+
     });
     if (iamyuhang_user_is_exist()) {
         $.ajax({

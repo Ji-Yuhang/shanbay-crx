@@ -88,7 +88,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
 function popover(alldata) {
     var parent_is_popver = is_ancestor_contain_id(window.getSelection().anchorNode, 'shanbay_popover');
-    parse_html_body();
+    //parse_html_body();
     var data = alldata.shanbay;
     var wholeText = alldata.wholeText;
     if (data.data && data.data.content) getThesaurus(data.data.content);
