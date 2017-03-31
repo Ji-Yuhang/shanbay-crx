@@ -108,7 +108,8 @@ function popover(alldata) {
         } else {// word exist, but not recorded
             html += '<p><span class="word">' + data.data.content + '</span>'
                 + '<small class="pronunciation">' + (data.data.pron.length ? ' [' + data.data.pron + '] ' : '') + '</small>'
-            + '<span class="shanbay_popover_phrase" id="shanbay_popover_phrase" style="color:blue!important; font-weight:bold!important">' + '</span></p>'
+            + '<span class="shanbay_popover_phrase" id="shanbay_popover_phrase" style="color:blue!important; font-weight:bold!important">' + '</span>'
+            + '<span id="shanbay_popover_stars" style="color:#ff5400!important;"></span></p>'
             // Ji-Yuhang remove UK
             html += '<a href="#" class="speak us">US<i class="icon icon-speak"></i></a></h3>'
 
@@ -124,7 +125,9 @@ function popover(alldata) {
         var forgotUrl = "http://www.shanbay.com/review/learning/" + data.data.learning_id
         html += '<p><span class="word">' + data.data.content + '</span>'
             + '<span class="pronunciation">' + (data.data.pron.length ? ' [' + data.data.pron + '] ' : '') + '</span>'
-            + '<span class="shanbay_popover_phrase" id="shanbay_popover_phrase" style="color:blue!important; font-weight:bold!important">' + '</span></p>'
+            + '<span class="shanbay_popover_phrase" id="shanbay_popover_phrase" style="color:blue!important; font-weight:bold!important">' + '</span>'
+            + '<span id="shanbay_popover_stars" style="color:#ff5400!important;"></span></p>'
+
         html += '<a href="#" class="speak us">US<i class="icon icon-speak"></i></a></h3>'
 
         html += '<div class="popover-content">'
@@ -258,7 +261,7 @@ function playAudio(audio_url) {
 
 function getThesaurus(word) {
     //var url = "http://localhost:3001/api/v1/words/thesaurus"
-    // Ji-Yuhang 
+    // Ji-Yuhang
     console.log("getThesaurus:",word);
     $.ajax({
         url: 'https://iamyuhang.com/api/v1/words/thesaurus/?word=' +word ,
@@ -281,6 +284,7 @@ function getThesaurus(word) {
                 //data: {msg: 'success', rsp: data.data}
             //});
             var thesaurus = data.data.thesaurus;
+            var macmillan = data.data.macmillan;
             var thesaurus_text =JSON.stringify(thesaurus);
             thesaurus_text = ''
             for (var adj in thesaurus)
@@ -296,7 +300,7 @@ function getThesaurus(word) {
                         var w = list[j];
                         list_text += '<span>&nbsp;';
                         list_text += w;
-                        list_text += '-></span>';
+                        list_text += ' </span>';
 
                     }
                     list_text += '</span><br/>';
@@ -308,7 +312,14 @@ function getThesaurus(word) {
                 thesaurus_text += '<p>' + list_list_text + '</p>';
             }
             $("#shanbay_popover_thesaurus").append(thesaurus_text);
-            console.log('getThesaurus success', data, data.data, thesaurus, thesaurus_text);
+            if (macmillan && macmillan.frequency) {
+              var temp = 5 - macmillan.frequency;
+              // if (temp < 0) temp = 0;
+              var stars = '★★★★★'.slice(temp);
+              var star_font = '' + stars + '';
+              $("#shanbay_popover_stars").append(star_font);
+            }
+            console.log('getThesaurus success', data, data.data, thesaurus, thesaurus_text,macmillan);
         },
         error: function (xhr,status, error) {
 //            chrome.tabs.sendMessage(tab.id, {
@@ -325,7 +336,7 @@ function getThesaurus(word) {
 
 function getPhrase(word, wholeText){
     //var url = "http://localhost:3001/api/v1/words/thesaurus"
-    // Ji-Yuhang 
+    // Ji-Yuhang
     console.log("getPhrase:",word,wholeText);
     $.ajax({
         url: 'https://iamyuhang.com/api/v1/words/phrase/',
@@ -413,5 +424,5 @@ function is_ancestor_contain_id(node,id) {
     }
     if (node && node.id == id) return true
     return false;
-    
+
 };
