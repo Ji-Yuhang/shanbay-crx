@@ -37,12 +37,71 @@ function on_selected_text(request, sender, sendResponse) {
     });
 
 }
+function playAudio(audio_url) {
+    if (audio_url) {
+        new Howl({
+            src: [audio_url],
+            volume: 1.0
+        }).play();
+    }
+};
+function on_add_word(request, sender, sendResponse) {
+    console.log('iamyuhang.js on_add_word:', request, sender);
+    if (iamyuhang_user_is_exist()) {
+        $.ajax({
+            url: 'https://iamyuhang.com/api/v1/words/learning/',
+            //url: 'http://localhost:3001/api/v1/words/learning/',
+            type: 'POST',
+            dataType: 'JSON',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({
+                word: request.shanbay.content,
+                token: iamyuhang_user().authentication_token
+            }),
 
+            success: function (data) {
+                console.log('ajax success',data);
+                if (data.status == 'ok') {
+                    chrome.tabs.sendMessage(sender.tab.id, {
+                        method: 'add_word_success',
+                        data: data
+                    });
+                }
+            },
+            error: function (xhr,status, error) {
+                // chrome.tabs.sendMessage(tab.id, {
+                //     callback: 'addWord',
+                //     data: {msg: 'error', rsp: {}}
+                // });
+                console.log('error',xhr,status,error);
+            }
+        });
+    }
+    $.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'JSON',
+        contentType: "application/json; charset=utf-8",
+        success: function (data) {
+            console.log('shanbay api success', data);
+            chrome.tabs.sendMessage(sender.tab.id, {
+                method: 'shanbay_data',
+                shanbay: data
+            });
+        }
+    });
+};
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     console.log("iamyuhang.js received method: " + request);
     switch (request.method) {
         case 'selected_text':
             on_selected_text(request, sender, sendResponse);
+            break;
+        case 'add_word':
+            on_add_word(request, sender, sendResponse);
+            break;
+        case 'playAudio':
+            playAudio(request.data['audio_url']);
             break;
         case 'is_user_signed_on':
             isUserSignedOn();
