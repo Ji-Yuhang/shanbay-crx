@@ -116,6 +116,7 @@ function popover(alldata) {
             html += '<div class="popover-content">'
                 + '<p>' + data.data.definition.split('\n').join("<br/>") + "<br/>" + defs + '</p>'
                 + '<p id="shanbay_popover_thesaurus">' + '</p>'
+                + '<p id="shanbay_popover_verbal_adventages">' + '</p>'
                 + '<div class="add-btn"><a href="#" class="btn" id="shanbay-add-btn">添加生词</a>'
                 + '<p class="success hide">成功添加！</p>'
                 + '<a href="#" target="_blank" class="btn hide" id="shanbay-check-btn">查看</a></div>'
@@ -134,6 +135,7 @@ function popover(alldata) {
             + '<p>' + data.data.definition.split('\n').join("<br/>") + '</p>'
             + '<p>' + data.data.en_definition.defn.split('\n').join("<br/>") + '</p>'
             + '<p id="shanbay_popover_thesaurus">' + '</p>'
+            + '<p id="shanbay_popover_verbal_adventages">' + '</p>'
             + '<div class="add-btn"><a href="#" class="btn" id="shanbay-forget-btn">我忘了</a></div>'
             + '<p class="success hide">成功添加！</p>'
             + '<div class="add-btn"><a href="' + forgotUrl + '" target="_blank" class="btn" id="shanbay-check-btn">查看</a></div>'
@@ -285,6 +287,7 @@ function getThesaurus(word) {
             //});
             var thesaurus = data.data.thesaurus;
             var macmillan = data.data.macmillan;
+            var verbal_adventages = data.data.verbal_adventages;
             var thesaurus_text =JSON.stringify(thesaurus);
             thesaurus_text = ''
             for (var adj in thesaurus)
@@ -319,7 +322,13 @@ function getThesaurus(word) {
               var star_font = '' + stars + '';
               $("#shanbay_popover_stars").append(star_font);
             }
-            console.log('getThesaurus success', data, data.data, thesaurus, thesaurus_text,macmillan);
+
+            if (verbal_adventages) {
+              var verbal = verbal_adventages.verbal;
+              var explanation = verbal_adventages.explanation;
+              $("#shanbay_popover_verbal_adventages").append(explanation);
+            }
+            console.log('getThesaurus success', data, data.data, thesaurus, thesaurus_text,macmillan,verbal_adventages);
         },
         error: function (xhr,status, error) {
 //            chrome.tabs.sendMessage(tab.id, {

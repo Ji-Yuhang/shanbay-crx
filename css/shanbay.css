@@ -128,4 +128,337 @@
   /*color: blue!important;*/
   /*font-weight: bold!important;*/
 /*}*/
+.bold {
+    font-weight: bold;
+    font-size: 1.0em;
+    /*color: red;*/
+    }
 
+.calibre {
+    display: block;
+    font-size: 1em;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: justify;
+    margin: 0 5pt
+    }
+.calibre_ {
+    display: block;
+    text-align: center;
+    text-indent: 0;
+    margin: 0
+    }
+.calibre_1 {
+    height: 616px;
+    vertical-align: baseline;
+    width: 440px
+    }
+.calibre_2 {
+    height: 616px;
+    vertical-align: baseline;
+    width: 477px
+    }
+.calibre_3 {
+    display: block;
+    text-align: left;
+    text-indent: 0;
+    margin: 6em 0 0
+    }
+.calibre_4 {
+    display: block;
+    text-align: center;
+    text-indent: 0;
+    margin: 11pt 0 0
+    }
+.calibre_5 {
+    display: block;
+    text-align: justify;
+    text-indent: 1em;
+    margin: 0
+    }
+.calibre_6 {
+    display: block;
+    text-align: justify;
+    text-indent: 2em;
+    margin: 0
+    }
+.calibre_7 {
+    display: block;
+    margin: 6em 0 0 2em
+    }
+.calibre_8 {
+    display: block;
+    text-align: left;
+    text-indent: 0;
+    margin: 0 0 0 2em
+    }
+.calibre_9 {
+    display: block;
+    margin: 11pt 0 0 2em
+    }
+.calibre_10 {
+    display: block;
+    margin: 0 0 0 2em
+    }
+.calibre_11 {
+    display: block;
+    text-align: justify;
+    text-indent: 2em;
+    margin: 0 0 0 2em
+    }
+.calibre_12 {
+    display: block;
+    text-align: justify;
+    text-indent: 1em;
+    margin: 0 0 0 2em
+    }
+.calibre_13 {
+    display: block;
+    height: 1em
+    }
+.calibre_14 {
+    display: block;
+    list-style-type: disc;
+    margin-bottom: 1em;
+    margin-right: 0;
+    margin-top: 1em;
+    text-align: justify;
+    text-indent: 0
+    }
+.calibre_15 {
+    display: list-item;
+    margin-top: 0;
+    text-align: justify;
+    text-indent: 0
+    }
+.calibre_16 {
+    display: block;
+    list-style-type: decimal;
+    margin-bottom: 1em;
+    margin-right: 0;
+    margin-top: 1em;
+    text-align: justify;
+    text-indent: 0
+    }
+.calibre_17 {
+    display: block;
+    margin: 1em 0 0 2em
+    }
+.calibre_18 {
+    display: block;
+    text-align: center;
+    text-indent: 2em;
+    margin: 0 0 0 2em
+    }
+.calibre_19 {
+    height: 12px;
+    vertical-align: baseline;
+    width: 65px
+    }
+.calibre_20 {
+    display: block;
+    margin: 2em 0 0 2em
+    }
+.calibre_21 {
+    display: block;
+    text-align: right;
+    text-indent: 2em;
+    margin: 0 0 0 2em
+    }
+.calibre_22 {
+    display: block;
+    text-align: justify;
+    text-indent: 0;
+    margin: 1em 0 0
+    }
+.calibre_23 {
+    display: block;
+    text-align: justify;
+    text-indent: 2em;
+    margin: 1em 0 0
+    }
+.calibre_24 {
+    display: block;
+    text-align: center;
+    text-indent: 2em;
+    margin: 1em 0 0
+    }
+.calibre_25 {
+    display: block;
+    text-align: justify;
+    text-indent: 1em;
+    margin: 1em 0 0
+    }
+.calibre_26 {
+    height: 67px;
+    vertical-align: baseline;
+    width: 374px
+    }
+.calibre_27 {
+    display: block;
+    text-align: center;
+    text-indent: 0;
+    margin: 1em 0 0
+    }
+.calibre_28 {
+    height: 37px;
+    vertical-align: baseline;
+    width: 373px
+    }
+.calibre_29 {
+    height: 51px;
+    vertical-align: baseline;
+    width: 373px
+    }
+.calibre_30 {
+    height: 37px;
+    vertical-align: baseline;
+    width: 374px
+    }
+.calibre_31 {
+    height: 10px;
+    vertical-align: baseline;
+    width: 6px
+    }
+.calibre_32 {
+    height: 10px;
+    vertical-align: baseline;
+    width: 4px
+    }
+.calibre_33 {
+    height: 10px;
+    vertical-align: baseline;
+    width: 7px
+    }
+.calibre_34 {
+    height: 7px;
+    vertical-align: baseline;
+    width: 10px
+    }
+.calibre_35 {
+    height: 37px;
+    vertical-align: baseline;
+    width: 358px
+    }
+.calibre_36 {
+    height: 51px;
+    vertical-align: baseline;
+    width: 358px
+    }
+.calibre_37 {
+    height: 37px;
+    vertical-align: baseline;
+    width: 357px
+    }
+.calibre_38 {
+    display: block;
+    text-align: justify;
+    text-indent: 2em;
+    margin: 4em 0 0
+    }
+.calibre_39 {
+    display: block;
+    text-indent: -14pt;
+    margin: 1em 0 0 14pt
+    }
+.calibre_40 {
+    display: block;
+    text-indent: -14pt;
+    margin: 0 0 0 14pt
+    }
+.calibre_41 {
+    display: block;
+    text-indent: 0;
+    margin: 0 0 0 2em
+    }
+.calibre1 {
+    display: block
+    }
+.calibre2 {
+    font-size: 1.41667em;
+    line-height: 1.2
+    }
+.calibre3 {
+    font-size: 1.125em;
+    line-height: 1.2
+    }
+.calibre4 {
+    color: blue
+    }
+.calibre5 {
+    font-size: 0.75em;
+    line-height: normal;
+    vertical-align: super
+    }
+.calibre6 {
+    font-size: 0.77778em
+    }
+.calibre7 {
+    font-size: 1.28571em
+    }
+.calibre8 {
+    font-size: 0.75em
+    }
+.calibre9 {
+    font-size: 0.75em;
+    line-height: normal;
+    vertical-align: sub
+    }
+.calibre10 {
+    color: green
+    }
+.calibre11 {
+    font-size: 1.83333em;
+    line-height: 1.2
+    }
+.calibre1 > .calibre1 > .italic {
+    font-style: italic;
+    color: #0099FF;
+    /*text-shadow: 0px 1px 0px #00CCFF;*/
+
+    /*font-size: 1em;*/
+
+    }
+.mbp_pagebreak {
+    display: block;
+    page-break-after: always;
+    margin: 0
+    }
+.underline {
+    text-decoration: underline
+    }
+.calibre8 {
+  color: blue;
+  text-transform: lowercase;
+  font-size: 1.5em;
+  /*text-shadow: 1px 1px 2px red, 0 0 1em yellow, 0 0 0.2em green;*/
+  text-shadow: 1px -1px 5px #990000;
+/*993399*/
+}
+.calibre1 {
+    display: block;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    border: 2px solid #e3e3e3;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+}
+.calibre1 div {
+    /*display: block;*/
+    padding: 10px;
+    /*background-color: #f5f5f5;*/
+    border-radius: 4px;
+    border: 0px solid red;
+    box-shadow: inset 0 0px 0px rgba(0,0,0,0.05);
+}
+.italic span {
+    font-style: italic;
+    color: #0099FF;
+    /*text-shadow: 0px 1px 0px #00CCFF;*/
+
+    /*font-size: 1em;*/
+
+    }
+.calibre_5 {
+  /*text-decoration: underline;*/
+}
