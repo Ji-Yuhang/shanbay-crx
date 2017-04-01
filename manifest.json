@@ -38,11 +38,14 @@
       ]
     },
     {
-      "css": ["css/shanbay.css"],
+      "css": [
+          "css/shanbay.css",
+          "css/content.css"
+      ],
       "js": [
         "js/jquery.min.js",
-        "js/shanbay.js",
-        "js/highlightRegex.min.js"
+        "js/highlightRegex.min.js",
+        "js/content.js"
       ],
       "matches": ["*://*/*"],
       "all_frames": true
