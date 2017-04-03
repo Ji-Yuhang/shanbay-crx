@@ -18,6 +18,25 @@ function iamyuhang_user_sign_out(){
 function notify_refresh_user_status(){
     chrome.runtime.sendMessage({method: 'refresh_iamyuhang_user_status'});
 }
+function get_iamyuhang_thesaurus(sender, word) {
+    let url = encodeURI('https://iamyuhang.com/api/v1/words/thesaurus/?word=' + word);
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'JSON',
+        contentType: "application/json; charset=utf-8",
+        success: function (data) {
+            console.log('iamyuhang thesaurus api success', data);
+            chrome.tabs.sendMessage(sender.tab.id, {
+                method: 'thesaurus_data',
+                data: data
+            });
+
+        }
+    });
+};
+
 var API = 'http://www.shanbay.com/api/v1/bdc/search/?word=';
 function on_selected_text(request, sender, sendResponse) {
     console.log('iamyuhang.js on_selected_text:', request, sender);
@@ -33,6 +52,9 @@ function on_selected_text(request, sender, sendResponse) {
                 method: 'shanbay_data',
                 shanbay: data
             });
+            if (data.msg == 'SUCCESS') {
+                get_iamyuhang_thesaurus(sender, data.data.content);
+            }
         }
     });
 
