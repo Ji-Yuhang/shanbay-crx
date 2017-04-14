@@ -66,6 +66,8 @@ function shanbay_template(data) {
 function awesome_popver_position() {
     let w = window.innerWidth;
     let h = window.innerHeight;
+    if (!mousePos)
+        return {x: w / 2, y: h/2};
     let x = mousePos.x;
     let y = mousePos.y;
 
@@ -101,9 +103,9 @@ function show_shanbay(data) {
         return false;
     });
     $('html').click(function (e) {
-        e.preventDefault();
+        //e.preventDefault();
         hide_popver();
-        return false;
+        //return false;
     });
     $('#shanbay_add_word').click(function (e) {
         e.preventDefault();
