@@ -1,5 +1,33 @@
 var mousePos;
 var last_shanbay_data;
+function traversal(node,callback){
+    if(!node) return;
+    if(node && node.hasAttribute && node.hasAttribute('al')) return;
+   //对node的处理
+    var i = 0, childNodes = node.childNodes,item;
+    if(node && node.nodeType === 3 && childNodes.length == 0){
+        //console.log(node.tagName);
+        setTimeout(
+            () => {callback(node)}
+            , 200);
+        //node.setAttribute('al', 1);
+        return;
+    }
+
+   for(; i < childNodes.length ; i++){
+     item = childNodes[i];
+     if(item){
+       //递归先序遍历子节点
+        //setTimeout(
+         //() => {
+             traversal(item, callback);
+         //}
+            //)
+     }
+   }
+ };
+
+
 function search_selected_text() {
     let text = window.getSelection().toString().trim().match(/^[a-zA-Z\s']+$/);
     let anchor_node_text = window.getSelection().anchorNode.wholeText
@@ -14,7 +42,35 @@ function search_selected_text() {
 function playAudio(audio_url) {
     chrome.runtime.sendMessage({method: "playAudio", data: {audio_url: audio_url}})
 }
+
+function replace_span(e) {
+    console.log('traversal',e);
+    //var html = e.innerHTML;
+    var text = e.textContent;
+    if (text) {
+        var ws = text.match(/\w+/g);
+        if(ws){
+            ws.forEach((w)=>{
+
+                var span_node = document.createElement('span');
+
+                span_node.setAttribute('al', 1);
+                //span_node.innerHTML = linkify(w);
+                span_node.innerText = w + ' ';
+                e.parentNode.insertBefore(span_node, e);
+                //html = html.replace(w, `<span>w</span>`);
+            });
+            e.parentNode.removeChild(e);
+        }
+
+        //$(e).html(html);
+    }
+}
+
 $(function () {
+
+    traversal(document.body, replace_span);
+    
     $(document).on('dblclick', search_selected_text);
     let popover_html = '<div id="popover_html" class="popover_html" ></div>';
     // style="display: none;"

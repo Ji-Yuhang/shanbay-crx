@@ -469,6 +469,8 @@ function playAudio(audio_url) {
 
 function parse_html_body(){
     var html = document.body.innerHTML;
+
+    console.log('parse_html_body', html);
     return;
     //console.log('parse_html_body');
     $.ajax({

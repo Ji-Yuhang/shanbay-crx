@@ -39,6 +39,7 @@ function searchingSelectedText () {
 }
 
 $(function () {
+    //traversal(document.body, function(e){console.log('traversal',e);});
     ls(function() {
         $(document).on('dblclick', searchingSelectedText);
     });
@@ -422,7 +423,7 @@ function traversal(node,callback){
      item = childNodes[i];
      if(item){
        //递归先序遍历子节点
-       traversal(item);
+       traversal(item, callback);
      }
    }
  };
