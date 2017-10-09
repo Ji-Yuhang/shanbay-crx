@@ -19,8 +19,8 @@ function notify_refresh_user_status(){
     chrome.runtime.sendMessage({method: 'refresh_iamyuhang_user_status'});
 }
 function get_iamyuhang_thesaurus(sender, word) {
-    return;
-    let url = encodeURI('https://iamyuhang.com/api/v1/words/thesaurus/?word=' + word);
+    // return;
+    let url = encodeURI('https://iamyuhang.com/api/v1/words/macmillan/?word=' + word);
 
     $.ajax({
         url: url,

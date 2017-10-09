@@ -44,7 +44,8 @@ function playAudio(audio_url) {
 }
 
 function replace_span(e) {
-    console.log('traversal',e);
+    //console.log('traversal',e);
+    return
     //var html = e.innerHTML;
     var text = e.textContent;
     if (text) {
@@ -228,7 +229,7 @@ function on_thesaurus_data(request, sender, sendResponse) {
     //         }
     //     }
     // };
-    let data = request.data.data;
+    let data = request.data;
     let thesaurus = data.thesaurus;
     let macmillan = data.macmillan;
     let verbal_adventages = data.verbal_adventages;
