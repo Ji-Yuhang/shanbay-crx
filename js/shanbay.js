@@ -2,7 +2,7 @@
  * 任意网页扇贝查词
  *
  */
-
+var HOST_NAME = 'https://memorysheep.com'|| 'https://iamyuhang.com'
 var last_position = {left:null,top:null}
 
 function ls(callback) {
@@ -76,7 +76,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                     $('#shanbay_popover .success, #shanbay-check-btn').removeClass('hide');
                     //$('#shanbay-check-btn').attr('href', 'http://www.shanbay.com/review/learning/' + message.data.rsp.word.id);
                     console.log('addWOrd success', message.data, message.data.rsp );
-                    $('#shanbay-check-btn').attr('href', 'https://iamyuhang.com/learnings/' + message.data.rsp.learning.id);
+                    $('#shanbay-check-btn').attr('href', HOST_NAME+'/learnings/' + message.data.rsp.learning.id);
                     break;
                 case "error":
                     $('#shanbay_popover .success').text('添加失败，请重试。').removeClass().addClass('failed');
@@ -267,7 +267,7 @@ function getThesaurus(word) {
     // Ji-Yuhang
     console.log("getThesaurus:",word);
     $.ajax({
-        url: 'https://iamyuhang.com/api/v1/words/thesaurus/?word=' +word ,
+        url: HOST_NAME+'/api/v1/words/thesaurus/?word=' +word ,
         type: 'GET',
         dataType: 'JSON',
         contentType: "application/json; charset=utf-8",
@@ -349,7 +349,7 @@ function getPhrase(word, wholeText){
     // Ji-Yuhang
     console.log("getPhrase:",word,wholeText);
     $.ajax({
-        url: 'https://iamyuhang.com/api/v1/words/phrase/',
+        url: HOST_NAME+'/api/v1/words/phrase/',
         //url: 'http://localhost:3000/api/v1/words/phrase/',
         type: 'POST',
         dataType: 'JSON',
@@ -391,7 +391,7 @@ function parse_html_body(){
     console.log('parse_html_body');
     $.ajax({
         //url: 'http://localhost:3000/api/v1/words/parse_html/',
-        url: 'https://iamyuhang.com/api/v1/words/parse_html/',
+        url: HOST_NAME+'/api/v1/words/parse_html/',
         type: 'POST',
         dataType: 'JSON',
         contentType: "application/json; charset=utf-8",

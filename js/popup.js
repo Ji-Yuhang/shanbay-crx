@@ -1,6 +1,7 @@
 /**
  * @user Joseph
  */
+var HOST_NAME = 'https://memorysheep.com'|| 'https://iamyuhang.com'
 
 function addBatch(text) {
     var lines = text.split('\n');
@@ -111,7 +112,7 @@ $(function () {
         });
     });
     $('#learnings').click(function(){
-        chrome.tabs.create({url: 'https://iamyuhang.com/learnings'});
+        chrome.tabs.create({url: HOST_NAME+'/learnings'});
 
     });
 
