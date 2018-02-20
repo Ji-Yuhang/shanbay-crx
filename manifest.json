@@ -17,7 +17,8 @@
       "js/dictionaries/dict.js",
       "js/iamyuhang.js",
       "js/background.js",
-      "js/highlightRegex.min.js"
+      "js/highlightRegex.min.js",
+      "js/jquery.mark.min.js"
     ]
   },
   "options_page": "options.html",
@@ -45,7 +46,8 @@
       "js": [
         "js/jquery.min.js",
         "js/highlightRegex.min.js",
-        "js/content.js"
+        "js/content.js",
+        "js/jquery.mark.min.js"
       ],
       "matches": ["*://*/*"],
       "all_frames": true
