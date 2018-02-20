@@ -470,12 +470,12 @@ function playAudio(audio_url) {
 
 function parse_html_body(){
     var html = document.body.innerHTML;
-
-    console.log('parse_html_body', html);
     return;
+    console.log('parse_html_body', html);
+    // return;
     //console.log('parse_html_body');
     $.ajax({
-        //url: 'http://localhost:3000/api/v1/words/parse_html/',
+        // url: 'http://localhost:3000/api/v1/words/parse_html/',
         url: HOST_NAME+'/api/v1/words/parse_html/',
         type: 'POST',
         dataType: 'JSON',
@@ -486,10 +486,10 @@ function parse_html_body(){
         }),
 
         success: function (data) {
-            //console.log('parse_html_body  success',data);
+            console.log('parse_html_body  success',data);
         },
         error: function (xhr,status, error) {
-            //console.log('parse_html_body error',xhr,status,error);
+            console.log('parse_html_body error',xhr,status,error);
         },
         complete: function () {
             //console.log('parse_html_body complete');

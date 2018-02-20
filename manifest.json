@@ -18,7 +18,8 @@
       "js/iamyuhang.js",
       "js/background.js",
       "js/highlightRegex.min.js",
-      "js/jquery.mark.min.js"
+      "js/jquery.mark.min.js",
+      "js/lodash.js"
     ]
   },
   "options_page": "options.html",
@@ -47,7 +48,8 @@
         "js/jquery.min.js",
         "js/highlightRegex.min.js",
         "js/content.js",
-        "js/jquery.mark.min.js"
+        "js/jquery.mark.min.js",
+        "js/lodash.js"
       ],
       "matches": ["*://*/*"],
       "all_frames": true

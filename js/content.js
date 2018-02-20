@@ -67,7 +67,98 @@ function replace_span(e) {
         //$(e).html(html);
     }
 }
+function do_mark_word(word){
+    $('body').mark(word, {accuracy: 'complementary'});
+    console.log('mark ',word);
+}
+function time_out_mark_word(words, index, time){
+    var word = words[index];
 
+    if(word) do_mark_word(word);
+
+    var nextIndex = index + 1;
+    var nextWord = words[nextIndex];
+    if (nextWord){
+        window.setTimeout(time_out_mark_word.bind(undefined, words, nextIndex, time), time);
+    }
+}
+function mark_words(words){
+    console.log('mark mark_words ', words);
+
+    time_out_mark_word(words, 0, 250);
+}
+function time_out_mark_bulk_words(chunks, index, time){
+    var words = chunks[index];
+
+    if(words) mark_words(words);
+
+    var nextIndex = index + 1;
+    var nextWords = chunks[nextIndex];
+    if (nextWords){
+        window.setTimeout(time_out_mark_bulk_words.bind(undefined, chunks, nextIndex, time), time);
+    }
+}
+function mark_bulk_words(words){
+    var chunks = _.chunk(words, 50);
+
+    time_out_mark_bulk_words(chunks, 0, 2000);
+}
+function parse_html_body(){
+    var html = document.body.innerHTML;
+
+    // console.log('parse_html_body', html);
+    // return;
+    //console.log('parse_html_body');
+    $.ajax({
+        // url: 'http://localhost:3000/api/v1/words/parse_html/',
+        url: HOST_NAME+'/api/v1/words/parse_html/',
+        type: 'POST',
+        dataType: 'JSON',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify({
+            //token: token_obj.value
+            html: html
+        }),
+
+        success: function (data) {
+            console.log('parse_html_body  success',data);
+            var collins1 = data.collins_intersection[0]['1'];
+            console.log('collins_intersection 1',collins1);
+            // $('body').mark(collins1);
+            mark_words(collins1);
+
+            // var chunks = _.chunk(collins1, 50);
+            // _.forEach(chunks, function(chunk_words){
+            //     console.log('chunks ', chunk_words);
+            //     setTimeout(function(words){
+            //         mark_words(words);
+            //         // for(var i=0; i<words.length; i++){
+            //         //     var temp_collins1 = words[i];
+            //         //     // $('body').mark(temp_collins1);
+            //         //     // console.log('mark  body',temp_collins1);
+            //         //     setTimeout(function(mark_word){
+            //         //         console.log('setTimeout mark ',mark_word);
+            //         //         $('body').mark(mark_word);
+            //         //         console.log('mark ',mark_word);
+            
+            //         //     }, 500, temp_collins1);
+            //         // }
+            //     }.bind(undefined, chunk_words), 2000 );
+
+                
+            
+            // })
+           
+           
+        },
+        error: function (xhr,status, error) {
+            console.log('parse_html_body error',xhr,status,error);
+        },
+        complete: function () {
+            //console.log('parse_html_body complete');
+        }
+    });
+};
 $(function () {
 
     traversal(document.body, replace_span);
@@ -81,6 +172,8 @@ $(function () {
         return false;
         // $("#popover_html").css("display", "none");
     });
+    console.log('parse_html_body')
+    parse_html_body();
 
 });
 function shanbay_template(data) {

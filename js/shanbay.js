@@ -89,7 +89,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
 function popover(alldata) {
     var parent_is_popver = is_ancestor_contain_id(window.getSelection().anchorNode, 'shanbay_popover');
-    //parse_html_body();
+    parse_html_body();
     var data = alldata.shanbay;
     var wholeText = alldata.wholeText;
     if (data.data && data.data.content) getThesaurus(data.data.content);
@@ -390,7 +390,7 @@ function parse_html_body(){
     var html = document.body.innerHTML;
     console.log('parse_html_body');
     $.ajax({
-        //url: 'http://localhost:3000/api/v1/words/parse_html/',
+        // url: 'http://localhost:3000/api/v1/words/parse_html/',
         url: HOST_NAME+'/api/v1/words/parse_html/',
         type: 'POST',
         dataType: 'JSON',
