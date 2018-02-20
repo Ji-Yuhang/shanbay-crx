@@ -1,6 +1,7 @@
 /**
  * @author Joseph
  */
+var HOST_NAME = 'https://memorysheep.com'|| 'https://iamyuhang.com'
 
 checked = false;
 
@@ -108,7 +109,7 @@ function login_iamyuhang_with_params(email,password,sendResponse){
     //localStorage.setItem('shanbay_cookies', cookie);
     $.ajax({
         //async: false,
-        url: 'https://iamyuhang.com/api/v1/users/sign_in/',
+        url: HOST_NAME+'/api/v1/users/sign_in/',
         //url: 'http://localhost:3001/api/v1/users/sign_in/',
         type: 'POST',
         dataType: 'JSON',
@@ -302,7 +303,7 @@ function addNewWordInBrgd(data, tab) {
     });
     if (iamyuhang_user_is_exist()) {
         $.ajax({
-            url: 'https://iamyuhang.com/api/v1/words/learning/',
+            url: HOST_NAME+'/api/v1/words/learning/',
             //url: 'http://localhost:3001/api/v1/words/learning/',
             type: 'POST',
             dataType: 'JSON',
@@ -475,7 +476,7 @@ function parse_html_body(){
     //console.log('parse_html_body');
     $.ajax({
         //url: 'http://localhost:3000/api/v1/words/parse_html/',
-        url: 'https://iamyuhang.com/api/v1/words/parse_html/',
+        url: HOST_NAME+'/api/v1/words/parse_html/',
         type: 'POST',
         dataType: 'JSON',
         contentType: "application/json; charset=utf-8",

@@ -1,3 +1,4 @@
+var HOST_NAME = 'https://memorysheep.com'|| 'https://iamyuhang.com'
 function iamyuhang_user(){
     try {
         var user = JSON.parse(localStorage['iamyuhang_user']);
@@ -20,7 +21,7 @@ function notify_refresh_user_status(){
 }
 function get_iamyuhang_thesaurus(sender, word) {
     // return;
-    let url = encodeURI('https://iamyuhang.com/api/v1/words/macmillan/?word=' + word);
+    let url = encodeURI(HOST_NAME+'/api/v1/words/macmillan/?word=' + word);
 
     $.ajax({
         url: url,
@@ -72,7 +73,7 @@ function on_add_word(request, sender, sendResponse) {
     console.log('iamyuhang.js on_add_word:', request, sender);
     if (iamyuhang_user_is_exist()) {
         $.ajax({
-            url: 'https://iamyuhang.com/api/v1/words/learning/',
+            url: HOST_NAME+'/api/v1/words/learning/',
             //url: 'http://localhost:3001/api/v1/words/learning/',
             type: 'POST',
             dataType: 'JSON',
