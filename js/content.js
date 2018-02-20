@@ -1,3 +1,5 @@
+var HOST_NAME = 'https://memorysheep.com'|| 'https://iamyuhang.com'
+
 var mousePos;
 var last_shanbay_data;
 function traversal(node,callback){
