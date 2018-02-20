@@ -87,7 +87,7 @@ function time_out_mark_word(words, index, time){
 function mark_words(words){
     console.log('mark mark_words ', words);
 
-    time_out_mark_word(words, 0, 250);
+    time_out_mark_word(words, 0, 0);
 }
 function time_out_mark_bulk_words(chunks, index, time){
     var words = chunks[index];
@@ -126,7 +126,11 @@ function parse_html_body(){
             console.log('parse_html_body  success',data);
             var collins1 = data.collins_intersection[0]['1'];
             console.log('collins_intersection 1',collins1);
+            var macmillan0 = data.macmillan_intersection[0]['1'];
+            console.log('macmillan_intersection 0', macmillan0);
+            
             // $('body').mark(collins1);
+            mark_words(macmillan0);
             mark_words(collins1);
 
             // var chunks = _.chunk(collins1, 50);
