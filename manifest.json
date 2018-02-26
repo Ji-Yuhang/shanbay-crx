@@ -40,6 +40,17 @@
       ]
     },
     {
+      "matches": ["*://*.shanbay.com/*"],
+      "js": [
+        "js/jquery.min.js",
+        "js/common.js",
+        "js/dictionaries/etymology.js",
+        "js/main.js",
+        "js/recordWorker.js",
+        "js/recorder.js"
+      ]
+    },
+    {
       "css": [
           "css/shanbay.css",
           "css/content.css"
@@ -90,7 +101,9 @@
   ],
   "web_accessible_resources": [
     "icon_48.png",
-    "images/bg-pattern.png"
+    "images/bg-pattern.png",
+    "images/*",
+    "js/recordWorker.js"
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval' ; object-src 'self'"
 }

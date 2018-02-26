@@ -109,7 +109,7 @@ function parse_html_body(){
     var html = document.body.innerHTML;
 
     // console.log('parse_html_body', html);
-    // return;
+    return;
     //console.log('parse_html_body');
     $.ajax({
         // url: 'http://localhost:3000/api/v1/words/parse_html/',
@@ -131,6 +131,7 @@ function parse_html_body(){
             
             // $('body').mark(collins1);
             mark_words(macmillan0);
+            // _.filter(collins1, )
             mark_words(collins1);
 
             // var chunks = _.chunk(collins1, 50);
