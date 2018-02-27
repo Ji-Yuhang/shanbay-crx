@@ -58,6 +58,7 @@
       "js": [
         "js/jquery.min.js",
         "js/highlightRegex.min.js",
+        "js/iamyuhang.js",
         "js/content.js",
         "js/jquery.mark.min.js",
         "js/lodash.js"

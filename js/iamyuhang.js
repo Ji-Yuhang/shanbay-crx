@@ -115,38 +115,39 @@ function on_add_word(request, sender, sendResponse) {
         }
     });
 };
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    console.log("iamyuhang.js received method: " + request);
-    switch (request.method) {
-        case 'selected_text':
-            on_selected_text(request, sender, sendResponse);
-            break;
-        case 'add_word':
-            on_add_word(request, sender, sendResponse);
-            break;
-        case 'playAudio':
-            playAudio(request.data['audio_url']);
-            break;
-        case 'is_user_signed_on':
-            isUserSignedOn();
-            break;
-        case 'lookup':
-            isUserSignedOn(function () {
-                getClickHandler(request.data, sender.tab, request.wholeText);
-            });
-            break;
-        case 'addWord':
-            addNewWordInBrgd(request.data, sender.tab);
-            break;
 
-        case 'login_iamyuhang_with_params':
-            login_iamyuhang_with_params(request.email,request.password,sendResponse);
-            break;
-        case 'sign_out_iamyuhang':
-            iamyuhang_user_sign_out();
-            //sendResponse();
-            break;
-        default :
-            sendResponse({data: [], error:'no method match'+ request.method, request:request}); // snub them.
-    }
-});
+// chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+//     console.log("iamyuhang.js received method: " + request);
+//     switch (request.method) {
+//         case 'selected_text':
+//             on_selected_text(request, sender, sendResponse);
+//             break;
+//         case 'add_word':
+//             on_add_word(request, sender, sendResponse);
+//             break;
+//         case 'playAudio':
+//             playAudio(request.data['audio_url']);
+//             break;
+//         case 'is_user_signed_on':
+//             isUserSignedOn();
+//             break;
+//         case 'lookup':
+//             isUserSignedOn(function () {
+//                 getClickHandler(request.data, sender.tab, request.wholeText);
+//             });
+//             break;
+//         case 'addWord':
+//             addNewWordInBrgd(request.data, sender.tab);
+//             break;
+
+//         case 'login_iamyuhang_with_params':
+//             login_iamyuhang_with_params(request.email,request.password,sendResponse);
+//             break;
+//         case 'sign_out_iamyuhang':
+//             iamyuhang_user_sign_out();
+//             //sendResponse();
+//             break;
+//         default :
+//             sendResponse({data: [], error:'no method match'+ request.method, request:request}); // snub them.
+//     }
+// });

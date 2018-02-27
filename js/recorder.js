@@ -30,7 +30,13 @@ function drawBuffer( width, height, context, data ) {
       context.fillRect(i,(1+min)*amp,1,Math.max(1,(max-min)*amp));
   }
 }
-
+function playAudio(audio_url) {
+  if (window.play_mp3) {
+    window.play_mp3(audio_url);
+  } else {
+    chrome.runtime.sendMessage({method: "playAudio", data: {audio_url: audio_url}})
+  }
+}
 
 /*License (MIT)
 
@@ -318,7 +324,67 @@ DEALINGS IN THE SOFTWARE.
     var word = $('#current-learning-word').text();
     console.log('current-learning-word', word);
     if (word){
-      
+      chrome.runtime.sendMessage({method: "iamyuhang_token"}, function(response){
+        console.log("sendMessage iamyuhang_token", response);
+        var wav_name = `${_.uniqueId()}_${word}.wav`;
+        var formData = new FormData();
+        formData.append('word', word);
+        formData.append('encoding', 'WAV');
+        formData.append('sample_rate', 44100);
+        formData.append('language', 'en-US');
+        formData.append('token', iamyuhang_user().authentication_token);
+        formData.append('file', blob, wav_name);
+  
+        $.ajax({
+            type:'POST',
+            // url: 'http://localhost:3000/api/v1/words/word_audios/',
+            url: HOST_NAME+'/api/v1/words/word_audios/',
+            processData: false,
+            contentType: false,
+            async: false,
+            cache: false,
+            data : formData,
+            
+            success: function (data) {
+              console.log('post word_audios  success',data);
+              if (data.word_audio.file.url){
+                playAudio(data.word_audio.file.url);
+              }
+              get_word_audios(word);
+
+            },
+            error: function (xhr,status, error) {
+                console.log('post word_audios error',xhr,status,error);
+            },
+            complete: function () {
+                //console.log('post word_audios complete');
+            }
+        });
+      });
+
+     
+      // $.ajax({
+      //   // url: 'http://localhost:3000/api/v1/words/parse_html/',
+      //   url: HOST_NAME+'/api/v1/words/parse_html/',
+      //   type: 'POST',
+      //   dataType: 'JSON',
+      //   contentType: "application/json; charset=utf-8",
+      //   data: JSON.stringify({
+      //       //token: token_obj.value
+      //       html: html
+      //   }),
+
+      //   success: function (data) {
+      //       console.log('parse_html_body  success',data);
+           
+      //   },
+      //   error: function (xhr,status, error) {
+      //       console.log('parse_html_body error',xhr,status,error);
+      //   },
+      //   complete: function () {
+      //       //console.log('parse_html_body complete');
+      //   }
+      // });
     }
   }
 
@@ -481,7 +547,75 @@ function gotStream(stream) {
     zeroGain.connect( audioContext.destination );
     updateAnalysers();
 }
+function get_word_audios(word){
+  if (word){
+    chrome.runtime.sendMessage({method: "iamyuhang_token"}, function(response){
+      console.log("sendMessage iamyuhang_token", response);
+      var token = iamyuhang_user().authentication_token || response.token;
+  
+      $.ajax({
+        url: HOST_NAME+`/api/v1/words/word_audios/?token=${token}&word=${word}`,
+        // url: `http://localhost:3000/api/v1/words/word_audios/?token=${token}&word=${word}`,
+        type: 'GET',
+        dataType: 'JSON',
+        contentType: "application/json; charset=utf-8",
+        /*            data: JSON.stringify({*/
+        //content_type: "vocabulary",
+        //id: word_id
+        /*}),*/
+      //  data: JSON.stringify({
+      //       word: word,
+      //       token: token 
+      //   }),
+    
+        success: function (data) {
+          console.log(' get_word_audios success', data);
 
+            var word_audios = data.word_audios;
+            //"{"id":2,"user_id":1,"word_id":6098,"content":"alcohol",
+            // "file":{"url":"http://localhost:3000/uploads/word_audio/file/2/blob"},
+            // "encoding":"WAV","sample_rate":44100,"language":"en-US","created_at":"2018-02-27T12:37:02.354+08:00","updated_at":"2018-02-27T12:37:02.354+08:00"
+            // }"
+            var score_html = 
+            `
+            <ol id='word_audio_file_list'>
+            ${_.map(word_audios, function(obj){
+              var date = new Date(obj.created_at);
+              var date_str = date.toLocaleString();
+              return `<li >${_.random(100.0)}| <button class='word_audio_file' href='${obj.file.url}'>Play</button> | ${date_str}</li>`
+            })}
+            </ol>
+            `
+            if (document.getElementById('word_audio_file_list')) {
+              $('#word_audio_file_list').remove();
+              $('body').append(score_html);
+
+            } else {
+              $('body').append(score_html);
+            }
+
+            $('.word_audio_file').on('click', function(){
+              console.log('.word_audio_file, onclick', this);
+              var audio_url = $(this).attr('href');
+              // if (window.play_mp3) {
+                // window.play_mp3(audio_url);
+              // } else {
+                playAudio(audio_url);
+              // }
+              // this.p
+            });
+        },
+        error: function (xhr,status, error) {
+            console.log('get_word_audios error',xhr,status,error);
+        },
+        complete: function () {
+            console.log('get_word_audios complete');
+        }
+    });
+    });
+  }
+ 
+};
 function initAudio() {
 
   let popover_html = 
@@ -499,6 +633,31 @@ function initAudio() {
   $('#record').on('click', function(){
     console.log('#record, onclick', this);
     toggleRecording(this);
+  });
+  $('#wavedisplay').on('click', function(){
+    console.log('#wavedisplay, onclick', this);
+    var audio_url = $('#record_save').attr('href');
+    if (window.play_mp3) {
+      window.play_mp3(audio_url);
+    } else {
+      playAudio(audio_url);
+    }
+  });
+  
+  
+  $(document).on("DOMNodeInserted", '#learning_word a#show_cn_df', function () {
+    // TODO 改变在线搜索的触发条件
+    if($('#learning_word .word h1.content').length>0) {
+        var word = $('#current-learning-word').text();
+        console.log('word changed', word );
+        get_word_audios(word);
+        // searchOnline();
+    }
+  });
+  $('#current-learning-word').on('change',function(e){
+    var word = $('#current-learning-word').text();
+    console.log('word changed',e, word );
+
   });
 
         if (!navigator.getUserMedia)

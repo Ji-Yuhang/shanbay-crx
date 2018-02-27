@@ -264,8 +264,19 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             iamyuhang_user_sign_out();
             //sendResponse();
             break;
+        case 'iamyuhang_token':
+            console.log('case iamyuhang_token begin ');
+            sendResponse({token:iamyuhang_user().authentication_token});
+            console.log('case iamyuhang_token after');
+
+            return true;
+            break;
+        case 'upload_word_audio':
+            upload_word_audio(request.data);
+            break;
         default :
-            sendResponse({data: [], error:'no method match'+ request.method, request:request}); // snub them.
+            console.log('fuck, You must cannot see this');
+            sendResponse({data: [], error:'no method match '+ request.method, request:request}); // snub them.
     }
 });
 
@@ -496,3 +507,42 @@ function parse_html_body(){
         }
     });
 };
+
+function upload_word_audio(params){
+    var word = params['word'];
+    var encoding = params['encoding'];
+    var sample_rate = params['sample_rate'];
+    var language = params['language'];
+    var file = params['file'];
+
+    var token = iamyuhang_user().authentication_token;
+    var formData = new FormData();
+      formData.append('word', word);
+      formData.append('encoding', 'WAV');
+      formData.append('sample_rate', 44100);
+      formData.append('language', 'en-US');
+      formData.append('token', token);
+      formData.append('file', file);
+
+      $.ajax({
+          type:'POST',
+        //   url: 'http://localhost:3000/api/v1/words/word_audios/',
+          url: HOST_NAME+'/api/v1/words/word_audios/',
+          processData: false,
+          contentType: false,
+          async: false,
+          cache: false,
+          data : formData,
+          
+          success: function (data) {
+            console.log('post word_audios  success',data);
+            
+          },
+          error: function (xhr,status, error) {
+              console.log('post word_audios error',xhr,status,error);
+          },
+          complete: function () {
+              //console.log('post word_audios complete');
+          }
+      });
+}

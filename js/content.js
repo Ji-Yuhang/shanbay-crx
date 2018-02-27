@@ -109,7 +109,7 @@ function parse_html_body(){
     var html = document.body.innerHTML;
 
     // console.log('parse_html_body', html);
-    return;
+    // return;
     //console.log('parse_html_body');
     $.ajax({
         // url: 'http://localhost:3000/api/v1/words/parse_html/',
