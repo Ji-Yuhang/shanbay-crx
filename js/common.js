@@ -25,7 +25,7 @@ var keys = [
 
 function ls(callback) {
     chrome.runtime.sendMessage({method: "getLocalStorage"}, function (response) {
-        console.info(response);
+        // console.info(response);
         if (undefined != response)
             for (var k in response.data)
                 localStorage[k] = response.data[k];

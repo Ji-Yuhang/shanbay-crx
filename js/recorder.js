@@ -280,7 +280,7 @@ DEALINGS IN THE SOFTWARE.
     }
 
     this.getBuffers = function(cb) {
-      console.log("this.getBuffers", cb);
+      // console.log("this.getBuffers", cb);
       currCallback = cb || config.callback;
       worker.postMessage({ command: 'getBuffers' })
     }
@@ -329,7 +329,7 @@ DEALINGS IN THE SOFTWARE.
         var wav_name = `${_.uniqueId()}_${word}.wav`;
         var formData = new FormData();
         formData.append('word', word);
-        formData.append('encoding', 'WAV');
+        formData.append('encoding', 'LINEAR16');
         formData.append('sample_rate', 44100);
         formData.append('language', 'en-US');
         formData.append('token', iamyuhang_user().authentication_token);
@@ -414,9 +414,9 @@ var recIndex = 0;
 */
 
 function saveAudio() {
-    audioRecorder.exportWAV( doneEncoding );
+    // audioRecorder.exportWAV( doneEncoding );
     // could get mono instead by saying
-    // audioRecorder.exportMonoWAV( doneEncoding );
+    audioRecorder.exportMonoWAV( doneEncoding );
 }
 
 function gotBuffers( buffers ) {
@@ -428,8 +428,8 @@ function gotBuffers( buffers ) {
 
     // the ONLY time gotBuffers is called is right after a new recording is completed - 
     // so here's where we should set up the download.
-    console.log("audioRecorder.exportWAV");
-    audioRecorder.exportWAV( doneEncoding );
+    console.log("audioRecorder.exportMonoWAV");
+    audioRecorder.exportMonoWAV( doneEncoding );
 }
 
 function doneEncoding( blob ) {
@@ -550,7 +550,7 @@ function gotStream(stream) {
 function get_word_audios(word){
   if (word){
     chrome.runtime.sendMessage({method: "iamyuhang_token"}, function(response){
-      console.log("sendMessage iamyuhang_token", response);
+      // console.log("sendMessage iamyuhang_token", response);
       var token = iamyuhang_user().authentication_token || response.token;
   
       $.ajax({
@@ -579,11 +579,18 @@ function get_word_audios(word){
             var score_html = 
             `
             <ol id='word_audio_file_list'>
-            ${_.map(word_audios, function(obj){
+            ${_.join(_.map(word_audios, function(obj){
               var date = new Date(obj.created_at);
               var date_str = date.toLocaleString();
-              return `<li >${_.random(100.0)}| <button class='word_audio_file' href='${obj.file.url}'>Play</button> | ${date_str}</li>`
-            })}
+              var google_results = obj.google_cloud_speech_results;
+              var transcript_score = _.join(_.map(google_results, function(result){
+                var result_class = (result.transcript.toLowerCase() == obj.content) ? 'google_cloud_speech_result_success' : 'google_cloud_speech_result_error' ;
+                return `<span class='google_cloud_speech_result ${result_class}'> ${result.transcript}&nbsp;${result.confidence * 100}</span>`;
+              }),'');
+              // transcript
+              var random_score = transcript_score || '0';//_.random(100.0);
+              return `<li >${random_score} | <button class='word_audio_file' href='${obj.file.url}'>Play</button> | ${date_str}</li>`
+            }), '')}
             </ol>
             `
             if (document.getElementById('word_audio_file_list')) {
@@ -595,7 +602,7 @@ function get_word_audios(word){
             }
 
             $('.word_audio_file').on('click', function(){
-              console.log('.word_audio_file, onclick', this);
+              // console.log('.word_audio_file, onclick', this);
               var audio_url = $(this).attr('href');
               // if (window.play_mp3) {
                 // window.play_mp3(audio_url);
@@ -660,6 +667,37 @@ function initAudio() {
 
   });
 
+  var canDownH = true;
+  $(document).keydown(function(e){
+    if (!canDownH) return;
+    if (!audioRecorder) return;
+    var word = $('#current-learning-word').text();
+    if (!word) return;
+    // console.log(String.fromCharCode(e.keyCode) + " keydown", e);
+    var keyCode = String.fromCharCode(e.keyCode);
+    if (canDownH && keyCode == 'H'){
+      canDownH = false;
+      $('#record').addClass('recording');
+      // start recording
+      console.log("start recording");
+      audioRecorder.clear();
+      audioRecorder.record();
+    }
+  });  
+  $(document).keyup(function(e){  
+    // console.log(String.fromCharCode(e.keyCode) + " keyup", e);
+    if (!audioRecorder) return;
+    var word = $('#current-learning-word').text();
+    if (!word) return;
+    var keyCode = String.fromCharCode(e.keyCode);
+    if (keyCode == 'H'){
+      $('#record').removeClass('recording');
+      console.log("stop recording");
+      audioRecorder.stop();
+      audioRecorder.getBuffers( gotBuffers );
+      canDownH = true;
+    }
+  });  
         if (!navigator.getUserMedia)
             navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
         if (!navigator.cancelAnimationFrame)

@@ -464,8 +464,8 @@
 }
 
 #record_div {
-    top: 100px;
-    right: 230px;
+    top: 50px;
+    right: 0px;
     width: 200px;
     width: 10vh;
     position: fixed;
@@ -511,16 +511,32 @@ canvas {
 }
 
 #word_audio_file_list {
-    top: 100px;
+    top: 160px;
     right: 0px;
     width: 200px;
     /* height: ; */
     position: fixed;
     color: #fff;
     background-color: #000;
+    border-color: #000;    
+    list-style-position: inside;
+
 }
 .word_audio_file {
     color: #2fd0bb;
     height: 20px;
 
+}
+.google_cloud_speech_result {
+
+}
+.google_cloud_speech_result_success {
+    color: #ffffff;
+    background-color: #87b87f !important;
+    border-color: #87b87f;    
+}
+.google_cloud_speech_result_error {
+    color: #ffffff;
+    background-color: #d9534f;
+    border-color: #d43f3a;
 }
