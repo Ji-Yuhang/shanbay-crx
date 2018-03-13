@@ -71,7 +71,7 @@ function replace_span(e) {
 }
 function do_mark_word(word){
     $('body').mark(word, {accuracy: 'complementary'});
-    console.log('mark ',word);
+    // console.log('mark ',word);
 }
 function time_out_mark_word(words, index, time){
     var word = words[index];
@@ -106,6 +106,7 @@ function mark_bulk_words(words){
     time_out_mark_bulk_words(chunks, 0, 2000);
 }
 function parse_html_body(){
+    if (!document.body) return;
     var html = document.body.innerHTML;
 
     // console.log('parse_html_body', html);
@@ -124,16 +125,23 @@ function parse_html_body(){
 
         success: function (data) {
             console.log('parse_html_body  success',data);
+            var collins0 = data.collins_intersection[0]['0'];
+            var collins0_filtered = _.filter(collins0, function(w){
+                return w.length > 2;
+            });
+            console.log('collins_intersection 0',collins0, collins0_filtered);
+            
             var collins1 = data.collins_intersection[0]['1'];
             console.log('collins_intersection 1',collins1);
             var macmillan0 = data.macmillan_intersection[0]['1'];
             console.log('macmillan_intersection 0', macmillan0);
             
             // $('body').mark(collins1);
-            mark_words(macmillan0);
+            // mark_words(macmillan0);
             // _.filter(collins1, )
+            mark_words(collins0_filtered);
             mark_words(collins1);
-
+            
             // var chunks = _.chunk(collins1, 50);
             // _.forEach(chunks, function(chunk_words){
             //     console.log('chunks ', chunk_words);
@@ -180,7 +188,7 @@ $(function () {
         // $("#popover_html").css("display", "none");
     });
     console.log('parse_html_body')
-    parse_html_body();
+    // parse_html_body();
 
 });
 function shanbay_template(data) {
@@ -284,6 +292,11 @@ function on_shanbay_data(request, sender, sendResponse) {
     if (shanbay.msg == 'SUCCESS') {
         show_shanbay(shanbay.data);
     }
+}
+function mark_hard(request, sender, sendResponse) {
+    console.log('content.js mark_hard:', request, sender);
+    parse_html_body();    
+    
 }
 function on_add_word_success(request, sender, sendResponse) {
     console.log('content.js on_add_word_success:', request, sender);
@@ -415,7 +428,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         case 'thesaurus_data':
             on_thesaurus_data(request, sender, sendResponse);
             break;
+        case 'mark_hard':
+            mark_hard(request, sender, sendResponse);
+            break;
         default :
-            sendResponse({data: [], error:'no method match'+ request.method, request:request}); // snub them.
+            // sendResponse({data: [], error:'no method match'+ request.method, request:request}); // snub them.
     }
 });

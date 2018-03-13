@@ -90,6 +90,21 @@ $(function () {
     $('#options').click(function () {
         chrome.tabs.create({url: 'options.html'})
     })
+    $('#mark_hard').click(function () {
+        console.log("mark_hard");
+        chrome.runtime.sendMessage({
+            method: 'mark_hard'
+        });
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs){  
+            chrome.tabs.sendMessage(tabs[0].id, {message:"mark_hard",method: 'mark_hard'}, function(response) {
+                if(typeof response !='undefined'){
+                    console.log(response);
+                }else{
+                    onsole.log("response为空=>"+response);
+                }
+            });//end  sendMessage   
+        }); //end query
+    })
     $('#login_iamyuhang').click(function () {
         chrome.tabs.create({url: 'login_iamyuhang.html'})
     })

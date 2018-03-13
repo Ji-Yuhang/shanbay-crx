@@ -275,8 +275,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             upload_word_audio(request.data);
             break;
         default :
-            console.log('fuck, You must cannot see this');
-            sendResponse({data: [], error:'no method match '+ request.method, request:request}); // snub them.
+            // console.log('fuck, You must cannot see this');
+            // sendResponse({data: [], error:'no method match '+ request.method, request:request}); // snub them.
     }
 });
 
