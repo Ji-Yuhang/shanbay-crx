@@ -77,7 +77,8 @@ function replace_span(e) {
     }
 }
 function do_mark_word(word){
-    $('body').mark(word, {accuracy: 'complementary'});
+    //$('body').mark(word, {accuracy: 'complementary'});
+    $('body').mark(word, {accuracy: 'exactly'});
     // console.log('mark ',word);
 }
 function time_out_mark_word(words, index, time){
