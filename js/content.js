@@ -2,6 +2,7 @@ var HOST_NAME = 'https://memorysheep.com'|| 'https://iamyuhang.com'
 
 var mousePos;
 var last_shanbay_data;
+var last_selected_text;
 function traversal(node,callback){
     if(!node) return;
     if(node && node.hasAttribute && node.hasAttribute('al')) return;
@@ -34,6 +35,12 @@ function search_selected_text() {
     let text = window.getSelection().toString().trim().match(/^[a-zA-Z\s']+$/);
     let anchor_node_text = window.getSelection().anchorNode.wholeText
     console.info("content.js selected " + text, anchor_node_text);
+    last_selected_text = text[0];
+    if (!_.isEmpty(last_selected_text)){
+        last_selected_text = text[0];
+    }
+    console.info("content.js last_selected_text: " , last_selected_text);
+
 
     chrome.runtime.sendMessage({
         method: 'selected_text',
@@ -187,6 +194,11 @@ $(function () {
         return false;
         // $("#popover_html").css("display", "none");
     });
+    $("mark").on('hover', function(e){
+        e.preventDefault();
+        console.log("mark on hover",e);
+        return false;
+    });
     console.log('parse_html_body')
     // parse_html_body();
 
@@ -212,7 +224,10 @@ function shanbay_template(data) {
 
                 </div>
                     <span>
-                        <button id="shanbay_add_word">添加</button>
+                        <button id="shanbay_add_word">添加生词</button>
+                    </span>
+                    <span>
+                        <button id="shanbay_add_known_word">标记熟悉</button>
                     </span>
                 </div>
             <div id="shanbay_definition">
@@ -254,6 +269,11 @@ function add_word(data) {
     console.log('content.js add_word:', data);
     chrome.runtime.sendMessage({method: "add_word", shanbay: data});
 }
+function add_known_word(data, selected_text) {
+    console.log('content.js add_known_word:',selected_text, data);
+    chrome.runtime.sendMessage({method: "add_known_word", data: {text: selected_text}});
+}
+
 function show_shanbay(data) {
     console.log('content.js show_shanbay:', data);
     last_shanbay_data = data;
@@ -279,6 +299,14 @@ function show_shanbay(data) {
             add_word(last_shanbay_data);
         return false;
     });
+    $('#shanbay_add_known_word').click(function (e) {
+        e.preventDefault();
+        let text = $('#shanbay_add_known_word').innerText;
+        if (text != '添加成功')
+            add_known_word(last_shanbay_data, last_selected_text);
+        return false;
+    });
+
 
     let pos = awesome_popver_position();
     $("#popover_html").css("left", `${pos.x}px`);
@@ -306,6 +334,16 @@ function on_add_word_success(request, sender, sendResponse) {
     $('#shanbay_add_word').remove();
     console.log('#shanbay_add_word : ', ('#shanbay_add_word').innerText);
 }
+function add_known_words_success(request, sender, sendResponse) {
+    console.log('content.js add_known_words_success:', request, sender);
+    let data = request.data;
+    console.log('content.js known_words:', data);
+    $('#shanbay_add_known_word').innerText='添加成功';
+    //$('body').unmark(data.known_word.content);
+    $('#shanbay_add_known_word').remove();
+    console.log('#add_known_words_success : ', ('#add_known_words_success').innerText);
+}
+
 function on_thesaurus_data(request, sender, sendResponse) {
     console.log('content.js on_thesaurus_data:', request, sender);
 // TODO: 显示不同词典的数据，抽象出通用的方法，可以显示不同的词典
@@ -425,6 +463,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         case 'add_word_success':
             on_add_word_success(request, sender, sendResponse);
             break;
+        case 'add_known_words_success':
+            add_known_words_success(request, sender, sendResponse);
+            break;
+
         case 'thesaurus_data':
             on_thesaurus_data(request, sender, sendResponse);
             break;

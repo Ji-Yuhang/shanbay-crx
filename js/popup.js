@@ -100,7 +100,7 @@ $(function () {
                 if(typeof response !='undefined'){
                     console.log(response);
                 }else{
-                    onsole.log("response为空=>"+response);
+                    console.log("response为空=>"+response);
                 }
             });//end  sendMessage   
         }); //end query
