@@ -33,7 +33,8 @@ function traversal(node,callback){
 
 function search_selected_text() {
     let text = window.getSelection().toString().trim().match(/^[a-zA-Z\s']+$/);
-    let anchor_node_text = window.getSelection().anchorNode.wholeText
+    let anchor_node_text = window.getSelection().anchorNode.wholeText;
+    if(!text) return;
     console.info("content.js selected " + text, anchor_node_text);
     last_selected_text = text[0];
     if (!_.isEmpty(last_selected_text)){
